@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script
+      defer
+      src="https://1rz6q.sse.codesandbox.io/dist/face-api.min.js"
+    ></script>
+    <script defer src="https://1rz6q.sse.codesandbox.io/dist/main.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+      #video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      div {
+        width: 50%;
+        height: 50%;
+        float: left;
+        background-size: cover;
+        background-position: center;
+      }
+      #topLeft {
+        background-image: url("https://media.giphy.com/media/jOPzNWa2R5a72RuREw/giphy.gif");
+      }
+      #topRight {
+        background-image: url("https://media.giphy.com/media/GcSqyYa2aF8dy/giphy.gif");
+      }
+      #bottomLeft {
+        background-image: url("https://media.giphy.com/media/J7jsbfcJ2O5eo/giphy.gif");
+      }
+      #bottomRight {
+        background-image: url("https://media.giphy.com/media/zqK4LMH8SIlos/giphy.gif");
+      }
+    </style>
+  </head>
+  <body>
+    <div id="topLeft"><video id="video" autoplay muted></video></div>
+    <div id="topRight"></div>
+    <div id="bottomLeft"></div>
+    <div id="bottomRight"></div>
+  </body>
+</html>

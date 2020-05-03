@@ -1,0 +1,52 @@
+{
+  "happy": [
+    "https://media.giphy.com/media/l396Uasr95XqhSFJm/giphy.gif",
+    "https://media.giphy.com/media/xUySTslGn0iJhSkOOY/giphy.gif",
+    "https://media.giphy.com/media/48UoqdKrAjhXG/giphy.gif",
+    "https://media.giphy.com/media/65ODCwM00NVmEyLsX3/giphy.gif",
+    "https://media.giphy.com/media/1PgPvWLfXGkCY/giphy.gif",
+    "https://media.giphy.com/media/QgixZj4y3TwnS/giphy.gif"
+  ],
+  "neutral": [
+    "https://media.giphy.com/media/f4b9EzraRCKatGXiHz/giphy.gif",
+    "https://media.giphy.com/media/3o6nUYhmHg75WFGHHG/giphy.gif",
+    "https://media.giphy.com/media/SxpX5m1rJXjMY/giphy.gif",
+    "https://media.giphy.com/media/1rOXYTAexjSk9Z7hp6/giphy.gif"
+  ],
+  "sad": [
+    "https://media.giphy.com/media/9Y5BbDSkSTiY8/giphy.gif",
+    "https://media.giphy.com/media/Ty9Sg8oHghPWg/giphy.gif",
+    "https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif",
+    "https://media.giphy.com/media/3dfEA0VTslup2/giphy.gif",
+    "https://media.giphy.com/media/fuDUlcnXPIGQ3AQaYj/giphy.gif",
+    "https://media.giphy.com/media/H9nnXKNfa5wf6/giphy.gif"
+  ],
+  "angry": [
+    "https://media.giphy.com/media/3o9bJX4O9ShW1L32eY/giphy.gif",
+    "https://media.giphy.com/media/Kogujap7iH67e/giphy.gif",
+    "https://media.giphy.com/media/qVXWm4kb6rRgA/giphy.gif",
+    "https://media.giphy.com/media/xULW8wD0yBHQ5ieetO/giphy.gif",
+    "https://media.giphy.com/media/STlUncsyfqmO7ClkWb/giphy.gif"
+  ],
+  "fearful": [
+    "https://media.giphy.com/media/cW1PvoyY7YCAw/giphy.gif",
+    "https://media.giphy.com/media/ksA9yBw34Hpvi/giphy.gif",
+    "https://media.giphy.com/media/BqHng2hpjOUdW/giphy.gif",
+    "https://media.giphy.com/media/l2JJwoI01FCRpfQE8/giphy.gif"
+  ],
+  "disgusted": [
+    "https://media.giphy.com/media/10FHR5A4cXqVrO/giphy.gif",
+    "https://media.giphy.com/media/3ohzdTG3cg9eIjBdy8/giphy.gif",
+    "https://media.giphy.com/media/QV5vp1BYenfCE/giphy.gif",
+    "https://media.giphy.com/media/p4yIX5BHZCkrC/giphy.gif",
+    "https://media.giphy.com/media/fR7Svnbu3vb45fUblN/giphy.gif",
+    "https://media.giphy.com/media/8PmTor9XVnD3sxXHRe/giphy.gif"
+  ],
+  "surprised": [
+    "https://media.giphy.com/media/PUBxelwT57jsQ/giphy.gif",
+    "https://media.giphy.com/media/aijty3bkVmxR6/giphy.gif",
+    "https://media.giphy.com/media/3ohhwzeceMRpHj56uY/giphy.gif",
+    "https://media.giphy.com/media/QC7Pr3M4gN0yuEDGgj/giphy-downsized-large.gif",
+    "https://media.giphy.com/media/51SCSNW2Pp3nW/giphy.gif"
+  ]
+}

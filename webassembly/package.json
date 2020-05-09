@@ -1,0 +1,16 @@
+{
+  "name": "webassembly-en-5-minutes",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js localhost 8080"
+  },
+  "dependencies": {
+    "express": "~4.16.1"
+  },
+  "devDependencies": {
+    "nodemon": "1.18.4"
+  },
+  "keywords": [],
+  "description": ""
+}

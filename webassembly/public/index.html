@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>WASM test</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+
+  <body>
+    <script>
+      const getRandomNumber = () => Math.floor(Math.random() * 10000);
+
+      WebAssembly.instantiateStreaming(
+        fetch("https://012q1.sse.codesandbox.io/wasm/add.wasm")
+      )
+        .then(obj => obj.instance.exports._Z3addii)
+        .then(add => {
+          document.getElementById("addTarget").textContent = add(
+            getRandomNumber(),
+            getRandomNumber()
+          );
+        });
+    </script>
+
+    <h1>Résultat du C++</h1>
+    <p id="addTarget"></p>
+  </body>
+</html>

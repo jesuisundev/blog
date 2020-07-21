@@ -1,6 +1,3 @@
-unsortedArray = [2018, 1998, 1986, 2020, 2006]
-
-
 def bubbleSort(arrayToSort):
     arrayIsSorted = False
 
@@ -17,4 +14,4 @@ def bubbleSort(arrayToSort):
     return arrayToSort
 
 
-print(bubbleSort(unsortedArray))
+print(bubbleSort([2018, 1998, 1986, 2020, 2006]))

@@ -14,44 +14,35 @@ class Graph():
 
 
     def depth_first_search(self, start):
-        # 1 - the stack to know where to go next
-        stack = deque()
-        # 1 - set to keep track of visited nodes.
-        seen = list()
+        stack = deque() # 1
+        deja_vu = list() # 1
 
-        # 2 - start the process by adding the first node to the stack
-        stack.appendleft(start)
+        stack.appendleft(start) # 2
 
-        # while the stack is not empty we have work to do
-        while stack:
-            # 3 - depile the stack with current node and do whatever we want todo
-            currentNodeRow, currentNodeColumn = stack.popleft()
+        while stack: # 3
+            currentNodeRow, currentNodeColumn = stack.popleft() # 4
 
-            # do what you need to do here
-            # for our problem we just want to put X in the current node
-            self.adjacency_matrix[currentNodeRow][currentNodeColumn] = 'X'
+            self.adjacency_matrix[currentNodeRow][currentNodeColumn] = 'X' # 5
 
-            # 4 - we've process this node, we need to remember we did
-            seen.append((currentNodeRow, currentNodeColumn))
+            deja_vu.append((currentNodeRow, currentNodeColumn))  # 6
 
-            # 5 - get the valid neighbors of the current
-            for validAdjacentNode in self.validAdjacentNodes((currentNodeRow, currentNodeColumn), seen):
-                # 5- push all of them in the stack for the next itération
-                stack.appendleft(validAdjacentNode)
+            for validAdjacentNode in self.validAdjacentNodes((currentNodeRow, currentNodeColumn), deja_vu): # 7
+                stack.appendleft(validAdjacentNode) # 8
 
 
-    def validAdjacentNodes(self, currentNode, seen):
-        # directions where we gonna search for valid node to push in the stack
+    def validAdjacentNodes(self, currentNode, deja_vu):
         # UP, DOWN, LEFT, RIGHT
         directions_offset = [(-1, 0), (1, 0), (0, -1), (0, 1)]
         currentNodeRow, currentNodeColumn = currentNode
 
-        # searching for valid node around the current node by updating coordinates at each iteration
+        # searching for valid node around the current node 
+        # by updating coordinates at each iteration
         for row_offset, column_offset in directions_offset:
             next_row, next_col = (currentNodeRow + row_offset, currentNodeColumn + column_offset)
 
-            # if the node is valid and not already seen we push it directly in the stack and continue
-            if self.isValidNode(next_row, next_col) and (next_row, next_col) not in seen:
+            # if the node is valid and not already deja_vu 
+            # we push it directly in the stack and continue
+            if self.isValidNode(next_row, next_col) and (next_row, next_col) not in deja_vu:
                 yield (next_row, next_col)
 
 
@@ -79,3 +70,16 @@ myGraph.depth_first_search((0,4))
 
 print('Maze after DFS')
 myGraph.display()
+
+# Initial maze
+# 0 1 1 0 0 
+# 1 1 0 0 0 
+# 1 0 0 1 0 
+# 1 1 0 1 1 
+# 0 1 0 0 0 
+# Maze after DFS
+# 0 1 1 X X 
+# 1 1 X X X 
+# 1 X X 1 X 
+# 1 1 X 1 1 
+# 0 1 X X X 

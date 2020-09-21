@@ -1,38 +1,96 @@
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+const renderer = new THREE.WebGLRenderer({ antialias: true })
 
-const geometry = new THREE.CylinderGeometry(5, 5, 20, 32);
-const material = new THREE.MeshBasicMaterial({ wireframe: true })
+let cylinderRadiusTop = 5
+let cylinderRadiusBottom = 1
+let cylinderHeight = 20
+let cylinderRadiusSegments = 32
+let cylinderHeightSegments = 1
+let cylinderOpenEnded = true
+
+const texture = new THREE.TextureLoader().load("/images/p1639ay-goodss-160930.jpg");
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(1, 1);
+const geometry = new THREE.CylinderGeometry(
+    cylinderRadiusTop,
+    cylinderRadiusBottom,
+    cylinderHeight,
+    cylinderRadiusSegments,
+    cylinderHeightSegments,
+    cylinderOpenEnded
+)
+const material = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, map: texture })
 const cylinder = new THREE.Mesh(geometry, material)
-var light = new THREE.PointLight(0xFFFF00);
-light.position.set(0, 0, 0);
-scene.add(light);
+
+// FOG
+// const near = 1;
+// const far = 2;
+// const fogColor = 'lightblue';
+// scene.fog = new THREE.Fog(fogColor, near, far);
+// scene.background = new THREE.Color(fogColor);
+
 
 
 scene.add(cylinder)
 
-camera.position.z = 0
 camera.position.x = 0
-camera.position.y = 15
+camera.position.y = 13
+camera.position.z = 0
 camera.lookAt(0, 0, 0)
 
-cylinder.flipSided = true
 renderer.setSize(window.innerWidth, window.innerHeight)
 
 document.body.appendChild(renderer.domElement)
+const color = 0xFFFFFF
+const intensity = 1
+const light = new THREE.AmbientLight(color, intensity)
+scene.add(light)
+
 
 window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight)
     camera.aspect = window.innerWidth / window.innerHeight
 
-    camera.updateProjectMatrix()
+    //camera.updateProjectMatrix()
 })
 
 function animate() {
     requestAnimationFrame(animate)
-    cylinder.rotation.y += 0.01;
+    cylinder.rotation.y += 0.001
+    texture.offset.y -= 0.0008;
+    texture.offset.x -= 0.0008;
+    //texture.offset.y %= 1;
+    //texture.needsUpdate = true;
+    // TODO => cant change geometry after its created
+    //cylinder.geometry.parameters.radiusBottom += 1
     renderer.render(scene, camera)
 }
-
+window.scene = scene
 animate()
+
+// dat gui
+var gui = new dat.GUI()
+var cameraGui = gui.addFolder('camera position')
+cameraGui.add(camera.position, 'x')
+cameraGui.add(camera.position, 'y')
+cameraGui.add(camera.position, 'z')
+cameraGui.open()
+
+var cameraGui = gui.addFolder('camera projection')
+cameraGui.add(camera, 'fov')
+cameraGui.open()
+
+var lightGui = gui.addFolder('light position')
+lightGui.add(light.position, 'x')
+lightGui.add(light.position, 'y')
+lightGui.add(light.position, 'z')
+lightGui.open()
+
+var cylinderGui = gui.addFolder('cylinder')
+
+cylinderGui.add(cylinder.position, 'x')
+cylinderGui.add(cylinder.position, 'y')
+cylinderGui.add(cylinder.position, 'z')
+cylinderGui.open()

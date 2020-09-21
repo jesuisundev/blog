@@ -75,7 +75,11 @@ body {
 }
 
 canvas {
-    z-index: 9999;
+    z-index: 9998;
     display: block;
     position: relative;
+}
+
+.dg.ac {
+    z-index: 9999 !important;
 }

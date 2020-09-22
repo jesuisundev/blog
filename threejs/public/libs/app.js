@@ -1,15 +1,24 @@
+// TODO
+
+// PARTICLE
+// SHAKING CAMERA
+// MOVE CAMERA TO BOTTOM
+// BACKGROUND TO WHITE SLOWLY THEN FAST
+
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 const renderer = new THREE.WebGLRenderer({ antialias: true })
 
-let cylinderRadiusTop = 5
+scene.fog = new THREE.FogExp2(0xe4dcff, 0.05)
+
+let cylinderRadiusTop = 1
 let cylinderRadiusBottom = 1
 let cylinderHeight = 20
 let cylinderRadiusSegments = 32
-let cylinderHeightSegments = 1
+let cylinderHeightSegments = 3
 let cylinderOpenEnded = true
 
-const texture = new THREE.TextureLoader().load("/images/p1639ay-goodss-160930.jpg");
+const texture = new THREE.TextureLoader().load("/images/dark.jpg");
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set(1, 1);
@@ -24,19 +33,11 @@ const geometry = new THREE.CylinderGeometry(
 const material = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, map: texture })
 const cylinder = new THREE.Mesh(geometry, material)
 
-// FOG
-// const near = 1;
-// const far = 2;
-// const fogColor = 'lightblue';
-// scene.fog = new THREE.Fog(fogColor, near, far);
-// scene.background = new THREE.Color(fogColor);
-
-
 
 scene.add(cylinder)
 
 camera.position.x = 0
-camera.position.y = 13
+camera.position.y = 10
 camera.position.z = 0
 camera.lookAt(0, 0, 0)
 

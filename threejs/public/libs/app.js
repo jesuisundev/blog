@@ -1,8 +1,6 @@
 // TODO
 
 // POST PROCESS EFFECT
-
-// DEPTH OF FIELD FIRST CYLINDER
 // SHAKING CAMERA
 // MOVE CAMERA TO BOTTOM
 // GOD-RAYS FROM 0 TO 1 opacitu with max density
@@ -39,7 +37,8 @@ const material = new THREE.MeshPhongMaterial({
     transparent: true,
     side: THREE.DoubleSide,
     map: texture,
-    blending: THREE.AdditiveBlending
+    blending: THREE.AdditiveBlending,
+    opacity: 0.4
 })
 const cylinder = new THREE.Mesh(geometry, material)
 
@@ -66,7 +65,6 @@ const secondMaterial = new THREE.MeshPhongMaterial({
 const secondCylinder = new THREE.Mesh(secondGeometry, secondMaterial)
 
 // third cylinder
-//const thirdTexture = new THREE.TextureLoader().load('/images/perseidas.jpg')
 const thirdTexture = new THREE.TextureLoader().load('/images/meteoritniy-dogd-nebo-meteoriti.jpg')
 thirdTexture.wrapS = THREE.RepeatWrapping
 thirdTexture.wrapT = THREE.MirroredRepeatWrapping
@@ -111,6 +109,41 @@ window.addEventListener('resize', () => {
     camera.updateProjectMatrix()
 })
 
+
+const sunMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    fog: true
+});
+
+const sunGeometry = new THREE.SphereBufferGeometry(0.25, 32, 32);
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+sun.frustumCulled = false;
+sun.matrixAutoUpdate = false;
+
+const godRaysEffect = new POSTPROCESSING.GodRaysEffect(camera, sun, {
+    height: 480,
+    kernelSize: POSTPROCESSING.KernelSize.SMALL,
+    density: 1.2,
+    decay: 0.92,
+    weight: 1,
+    exposure: 0.8, // tweak this to make the final effect
+    samples: 60,
+    clampMax: 1.0
+});
+
+const vignetteEffect = new POSTPROCESSING.VignetteEffect({
+    darkness: 0.5
+})
+
+const depthEffect = new POSTPROCESSING.RealisticBokehEffect({
+    blendFunction: POSTPROCESSING.BlendFunction.ADD,
+    focus: 2,
+    maxBlur: 5
+})
+
+console.log(Object.getOwnPropertyNames(POSTPROCESSING));
+
 const bloomEffect = new POSTPROCESSING.BloomEffect({
     blendFunction: POSTPROCESSING.BlendFunction.ADD,
     kernelSize: POSTPROCESSING.KernelSize.SMALL
@@ -122,7 +155,10 @@ bloomEffect.blendMode.opacity.value = 4;
 // postprocessing effect pass instance
 const effectPass = new POSTPROCESSING.EffectPass(
     camera,
-    bloomEffect
+    bloomEffect,
+    vignetteEffect,
+    depthEffect,
+    godRaysEffect
 );
 
 // enable effect pass
@@ -132,6 +168,7 @@ const composer = new POSTPROCESSING.EffectComposer(renderer);
 composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
 // postprocessing effect render pass
 composer.addPass(effectPass);
+
 
 function animate() {
     requestAnimationFrame(animate)

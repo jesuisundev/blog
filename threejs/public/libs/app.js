@@ -79,8 +79,17 @@ async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
 // FADE IN OCEANS
 
 // SHAKING CAMERA
+// DIFFERENT CYLINDER FADEIN AND FADEOU WITH EASE
 // MOVE CAMERA TO BOTTOM
 // BACKGROUND TO WHITE SLOWLY THEN FAST
+
+// TEXT in black
+// some theory suggest that wormhole are leading to parallel universe
+// FADEIN SUR PLANET HEARTH
+// FADE IN CREDITS
+// FADE IN SHARE
+
+
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 const renderer = new THREE.WebGLRenderer({

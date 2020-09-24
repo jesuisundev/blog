@@ -1,9 +1,35 @@
 // TODO
 
-// POST PROCESS EFFECT
+// OPACITY CANVAS 0
+// PRELOAD ALL (images, sound, texture)
+
+/// DIV INTRO
+// TITLE
+// GIF PUT SOUND ON
+// This experience uses only Javascript, HTML and CSS rendered in real time.
+// BOUTON LAUNCH EXPERIENCE
+
+// ON CLICK LAUNCH EXPERIENCE
+// FADE OUT DIV INTRO => THEN DELETE
+
+// LAUNCH SOUND somm => SET TIMEOUT 35SECONDES
+// A wormhole is a speculative structure linking disparate points in spacetime
+// If wormhole are real, they could connect billion light years distance or more
+// No one know exactly how they look like but they should bend space and time
+// OPACITY CANVAS 1 FADE IN
+// CLEAR TIMEOUT
+
+// SETTIMEOUT 28 secondes
+// CLEAR TIMEOUT
+// FADEIN SUN WITH FLASH
+
+
+// WAIT FOR CLICK ON SUN
+// FADE OUT THESOMMIUM
+// FADE IN OCEANS
+
 // SHAKING CAMERA
 // MOVE CAMERA TO BOTTOM
-// GOD-RAYS FROM 0 TO 1 opacitu with max density
 // BACKGROUND TO WHITE SLOWLY THEN FAST
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -172,6 +198,18 @@ const composer = new POSTPROCESSING.EffectComposer(renderer);
 composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
 // postprocessing effect render pass
 composer.addPass(effectPass);
+
+//SOUND
+var audiosomnium = new Audio('/audio/thesomnium.mp3');
+//var audio = document.createElement("AUDIO")
+//document.body.appendChild(audio);
+//audio.src = "./audio/rain.m4a"
+// document.body.addEventListener("click", function() {
+//         audiosomnium.play()
+//         fadeout()
+//     })
+// var vol = 0.20;
+// var interval = 200; // 200ms interval
 
 
 function animate() {

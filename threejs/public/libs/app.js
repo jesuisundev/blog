@@ -13,6 +13,7 @@ const renderer = new THREE.WebGLRenderer({
     stencil: false,
     depth: false
 })
+const interaction = new THREE.Interaction(renderer, scene, camera);
 
 let cylinderRadiusTop = 1
 let cylinderRadiusBottom = 1
@@ -109,7 +110,7 @@ window.addEventListener('resize', () => {
     camera.updateProjectMatrix()
 })
 
-
+// horizon
 const sunMaterial = new THREE.MeshBasicMaterial({
     color: 0xffffff,
     transparent: true,
@@ -120,6 +121,11 @@ const sunGeometry = new THREE.SphereBufferGeometry(0.25, 32, 32);
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 sun.frustumCulled = false;
 sun.matrixAutoUpdate = false;
+scene.add(sun)
+sun.cursor = 'pointer';
+sun.on('click', function(ev) {
+    alert('CLICK ON HORIZON')
+});
 
 const godRaysEffect = new POSTPROCESSING.GodRaysEffect(camera, sun, {
     height: 480,
@@ -141,8 +147,6 @@ const depthEffect = new POSTPROCESSING.RealisticBokehEffect({
     focus: 2,
     maxBlur: 5
 })
-
-console.log(Object.getOwnPropertyNames(POSTPROCESSING));
 
 const bloomEffect = new POSTPROCESSING.BloomEffect({
     blendFunction: POSTPROCESSING.BlendFunction.ADD,
@@ -173,16 +177,16 @@ composer.addPass(effectPass);
 function animate() {
     requestAnimationFrame(animate)
     cylinder.rotation.y += 0.001
-    texture.offset.y -= 0.0008
-    texture.offset.x -= 0.0008
+    texture.offset.y -= 0.0006 // move forward
+    texture.offset.x -= 0.0006
 
     secondCylinder.rotation.y += 0.001
-    secondTexture.offset.y -= 0.0018
-    secondTexture.offset.x -= 0.0008
+    secondTexture.offset.y -= 0.0016
+    secondTexture.offset.x -= 0.0006
 
     thirdCylinder.rotation.y += 0.001
-    thirdTexture.offset.y -= 0.0058
-    thirdTexture.offset.x -= 0.0008
+    thirdTexture.offset.y -= 0.0056
+    thirdTexture.offset.x -= 0.0006
         // texture.offset.y %= 1
         // texture.needsUpdate = true
         // TODO => cant change geometry after its created

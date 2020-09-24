@@ -78,8 +78,87 @@ canvas {
     z-index: 9998;
     display: block;
     position: relative;
+    -webkit-transition: opacity 8s;
+    -moz-transition: opacity 8s;
+    transition: opacity 8s;
 }
 
 .dg.ac {
     z-index: 9999 !important;
+}
+
+#intro {
+    z-index: 9999;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: center;
+    -webkit-transition: opacity 5s;
+    -moz-transition: opacity 5s;
+    transition: opacity 5s;
+}
+
+#story {
+    z-index: 9999;
+    position: fixed;
+    top: 50%;
+    left: 38%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: center;
+    white-space: nowrap;
+}
+
+#firstStory,
+#secondStory,
+#thirdStory {
+    -webkit-transition: opacity 5s;
+    -moz-transition: opacity 5s;
+    transition: opacity 5s;
+    position: fixed;
+    top: 0;
+}
+
+.fadeIn {
+    opacity: 1;
+}
+
+.fadeOut {
+    opacity: 0;
+}
+
+.centered {
+    z-index: 1;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+h1 {
+    font-size: 150px;
+    margin-bottom: 0;
+}
+
+h2 {
+    font-size: 80px;
+    margin-top: 5px;
+}
+
+#intro .description {
+    font-size: 20px;
+}
+
+#intro .sound {
+    font-size: 35px;
+}
+
+#intro #launch {
+    font-size: 50px;
+}
+
+#intro .soundOn {
+    width: 150px;
 }

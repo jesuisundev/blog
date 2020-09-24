@@ -1,23 +1,73 @@
-// TODO
+let somnium
 
-// OPACITY CANVAS 0
-// PRELOAD ALL (images, sound, texture)
+preloadTextures()
+preloadAudio()
+init()
 
-/// DIV INTRO
-// TITLE
-// GIF PUT SOUND ON
-// This experience uses only Javascript, HTML and CSS rendered in real time.
-// BOUTON LAUNCH EXPERIENCE
+/**
+ * Iterate on all the texture and preload them 
+ * using Image constructor.
+ */
+function preloadTextures() {
+    const listTextures = ['/images/dark.jpg', '/images/colorfull.jpg', '/images/meteoritniy-dogd-nebo-meteoriti.jpg']
+    const images = []
 
-// ON CLICK LAUNCH EXPERIENCE
-// FADE OUT DIV INTRO => THEN DELETE
+    for (let i = 0; i < listTextures.length; i++) {
+        images[i] = new Image();
+        images[i].src = listTextures[i];
+    }
+}
 
-// LAUNCH SOUND somm => SET TIMEOUT 35SECONDES
-// A wormhole is a speculative structure linking disparate points in spacetime
-// If wormhole are real, they could connect billion light years distance or more
-// No one know exactly how they look like but they should bend space and time
-// OPACITY CANVAS 1 FADE IN
-// CLEAR TIMEOUT
+/**
+ * Iterate on all the audio and preload them using Howl
+ */
+function preloadAudio() {
+    somnium = new Howl({
+        src: ['/audio/thesomnium.mp3']
+    });
+}
+document.getElementById('launch').addEventListener('click', function(ev) {
+    event.preventDefault()
+    document.getElementById('intro').className = 'fadeOut'
+    setTimeout(() => document.getElementById('intro').remove(), 6000)
+
+    somnium.play()
+    setTimeout(fadeInWormhole, 35000)
+    launchStories()
+});
+
+function fadeInWormhole() {
+    document.getElementById('wormhole').className = 'fadeIn'
+}
+
+function init() {
+    setTimeout(fadeInIntro, 3000)
+}
+
+function fadeInIntro() {
+    document.getElementById('intro').className = 'fadeIn'
+}
+
+async function launchStories() {
+    console.log('launchStories')
+    await fadeInWaitThenFadeOut('firstStory', 8000)
+    await fadeInWaitThenFadeOut('secondStory', 7000)
+    await fadeInWaitThenFadeOut('thirdStory', 4000)
+}
+
+async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
+    await new Promise(resolve => setTimeout(resolve, 4000))
+
+    document.getElementById(currentIdStory).className = 'fadeIn'
+
+    return await new Promise(resolve => {
+        setTimeout(() => {
+            console.log(currentIdStory)
+            document.getElementById(currentIdStory).className = 'fadeOut'
+            resolve()
+        }, time)
+    })
+}
 
 // SETTIMEOUT 28 secondes
 // CLEAR TIMEOUT
@@ -124,6 +174,8 @@ camera.lookAt(0, 0, 0)
 
 renderer.setSize(window.innerWidth, window.innerHeight)
 
+renderer.domElement.id = 'wormhole'
+renderer.domElement.className = 'fadeOut'
 document.body.appendChild(renderer.domElement)
 const color = 0xFFFFFF
 const intensity = 1

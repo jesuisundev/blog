@@ -1,9 +1,10 @@
-let somnium
+let somnium, oceans
 let effectPass
+let revealCallToAction
 
 preloadTextures()
 preloadAudio()
-init()
+const revealIntro = setTimeout(fadeInIntro, 3000)
 
 /**
  * Iterate on all the texture and preload them 
@@ -25,20 +26,26 @@ function preloadTextures() {
 function preloadAudio() {
     somnium = new Howl({
         src: ['/audio/thesomnium.mp3']
-    });
+    })
+    oceans = new Howl({
+        src: ['/audio/oceans.mp3']
+    })
 }
-document.getElementById('launch').addEventListener('click', function(ev) {
+document.getElementById('launch').addEventListener('click', async event => entrypointExperience(event))
+
+async function entrypointExperience(event) {
     event.preventDefault()
+
     document.getElementById('intro').className = 'fadeOut'
-    setTimeout(() => document.getElementById('intro').remove(), 6000)
+    const removeIntro = setTimeout(() => document.getElementById('intro').remove(), 6000)
 
     somnium.play()
-    setTimeout(fadeInWormhole, 35000)
-    launchStories()
-});
 
-function fadeInWormhole() {
-    document.getElementById('wormhole').className = 'fadeIn'
+    const revealWormhole = setTimeout(() => document.getElementById('wormhole').className = 'fadeIn', 35000)
+
+    await introStoryEvent()
+    await horizonAwakeningEvent()
+    await revealCallToActionEvent()
 }
 
 function init() {
@@ -49,24 +56,34 @@ function fadeInIntro() {
     document.getElementById('intro').className = 'fadeIn'
 }
 
-async function launchStories() {
-    console.log('launchStories')
+async function introStoryEvent() {
     await fadeInWaitThenFadeOut('firstStory', 8000)
     await fadeInWaitThenFadeOut('secondStory', 7000)
     await fadeInWaitThenFadeOut('thirdStory', 4000)
-    launchCallToAction()
 }
 
-function launchCallToAction() {
-    setTimeout(() => {
-        const horizonGrowExposureCallToAction = new TWEEN.Tween(
-            effectPass.effects[1].godRaysMaterial.uniforms.exposure
-        ).to({ value: 4 }, 3000).easing(TWEEN.Easing.Cubic.In);
-        const horizonReduceExposureCallToAction = new TWEEN.Tween(
-            effectPass.effects[1].godRaysMaterial.uniforms.exposure
-        ).to({ value: 0.8 }, 3000).easing(TWEEN.Easing.Cubic.Out);
-        horizonGrowExposureCallToAction.start().chain(horizonReduceExposureCallToAction);
-    }, 28000)
+async function horizonAwakeningEvent() {
+    return await new Promise(resolve => {
+        setTimeout(() => {
+            const horizonGrowExposureCallToAction = new TWEEN.Tween(
+                effectPass.effects[1].godRaysMaterial.uniforms.exposure
+            ).to({ value: 4 }, 3000).easing(TWEEN.Easing.Cubic.In);
+            const horizonReduceExposureCallToAction = new TWEEN.Tween(
+                effectPass.effects[1].godRaysMaterial.uniforms.exposure
+            ).to({ value: 0.8 }, 3000).easing(TWEEN.Easing.Cubic.Out);
+            horizonGrowExposureCallToAction.start().chain(horizonReduceExposureCallToAction);
+            resolve()
+        }, 28000)
+    })
+}
+
+async function revealCallToActionEvent() {
+    return await new Promise(resolve => {
+        setTimeout(() => {
+            document.getElementById("callToAction").style.display = "block"
+            resolve()
+        }, 3000)
+    })
 }
 
 async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
@@ -83,14 +100,24 @@ async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
     })
 }
 
+function launchHorizonEvent(event) {
+    event.preventDefault()
 
-// call to action on HORIZON
-// WAIT FOR CLICK ON SUN
-// FADE OUT THESOMMIUM
-// FADE IN OCEANS
+    document.getElementById('callToAction').className = 'fadeOut'
 
-// SHAKING CAMERA
+    // Fade out the first sound and speed up the second.
+    somnium.fade(1, 0, 1500)
+    oceans.volume(0)
+    oceans.play()
+    oceans.fade(0, 1, 5000)
+}
+
+
+
+
+// SLOW THEN LAUNCH
 // DIFFERENT CYLINDER FADEIN AND FADEOU WITH EASE
+// SHAKING CAMERA
 // MOVE CAMERA TO BOTTOM
 // BACKGROUND TO WHITE SLOWLY THEN FAST
 
@@ -195,6 +222,7 @@ camera.lookAt(0, 0, 0)
 renderer.setSize(window.innerWidth, window.innerHeight)
 
 renderer.domElement.id = 'wormhole'
+    //TO CHANGE
 renderer.domElement.className = 'fadeOut'
 document.body.appendChild(renderer.domElement)
 const color = 0xFFFFFF
@@ -221,9 +249,8 @@ sun.frustumCulled = false;
 sun.matrixAutoUpdate = false;
 scene.add(sun)
 sun.cursor = 'pointer';
-sun.on('click', function(ev) {
-    alert('CLICK ON HORIZON')
-});
+sun.on('click', event => launchHorizonEvent(event));
+document.getElementById('callToAction').addEventListener('click', event => launchHorizonEvent(event))
 
 const godRaysEffectOptions = {
     height: 480,

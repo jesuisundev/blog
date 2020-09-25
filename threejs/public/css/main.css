@@ -111,6 +111,32 @@ canvas {
     white-space: nowrap;
 }
 
+#callToAction {
+    z-index: 9999;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    -webkit-transition: opacity 5s;
+    -moz-transition: opacity 5s;
+    transition: opacity 5s;
+    display: none;
+}
+
+.blink_cta {
+    animation: blink_cta 2s linear infinite;
+}
+
+@keyframes blink_cta {
+    50% {
+        opacity: 0;
+    }
+}
+
 #firstStory,
 #secondStory,
 #thirdStory {

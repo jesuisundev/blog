@@ -1,4 +1,5 @@
 let somnium
+let effectPass
 
 preloadTextures()
 preloadAudio()
@@ -53,6 +54,19 @@ async function launchStories() {
     await fadeInWaitThenFadeOut('firstStory', 8000)
     await fadeInWaitThenFadeOut('secondStory', 7000)
     await fadeInWaitThenFadeOut('thirdStory', 4000)
+    launchCallToAction()
+}
+
+function launchCallToAction() {
+    setTimeout(() => {
+        const horizonGrowExposureCallToAction = new TWEEN.Tween(
+            effectPass.effects[1].godRaysMaterial.uniforms.exposure
+        ).to({ value: 4 }, 3000).easing(TWEEN.Easing.Cubic.In);
+        const horizonReduceExposureCallToAction = new TWEEN.Tween(
+            effectPass.effects[1].godRaysMaterial.uniforms.exposure
+        ).to({ value: 0.8 }, 3000).easing(TWEEN.Easing.Cubic.Out);
+        horizonGrowExposureCallToAction.start().chain(horizonReduceExposureCallToAction);
+    }, 28000)
 }
 
 async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
@@ -69,11 +83,8 @@ async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
     })
 }
 
-// SETTIMEOUT 28 secondes
-// CLEAR TIMEOUT
-// FADEIN SUN WITH FLASH
 
-
+// call to action on HORIZON
 // WAIT FOR CLICK ON SUN
 // FADE OUT THESOMMIUM
 // FADE IN OCEANS
@@ -88,7 +99,7 @@ async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
 // FADEIN SUR PLANET HEARTH
 // FADE IN CREDITS
 // FADE IN SHARE
-
+// END OF CHAPTER 1
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -199,9 +210,9 @@ window.addEventListener('resize', () => {
 
 // horizon
 const sunMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
     transparent: true,
-    fog: true
+    fog: true,
+    opacity: 1
 });
 
 const sunGeometry = new THREE.SphereBufferGeometry(0.25, 32, 32);
@@ -214,8 +225,10 @@ sun.on('click', function(ev) {
     alert('CLICK ON HORIZON')
 });
 
-const godRaysEffect = new POSTPROCESSING.GodRaysEffect(camera, sun, {
+const godRaysEffectOptions = {
     height: 480,
+    blendFunction: POSTPROCESSING.BlendFunction.ADD,
+    color: 0x000000,
     kernelSize: POSTPROCESSING.KernelSize.SMALL,
     density: 1.2,
     decay: 0.92,
@@ -223,7 +236,9 @@ const godRaysEffect = new POSTPROCESSING.GodRaysEffect(camera, sun, {
     exposure: 0.8, // tweak this to make the final effect
     samples: 60,
     clampMax: 1.0
-});
+}
+
+const godRaysEffect = new POSTPROCESSING.GodRaysEffect(camera, sun, godRaysEffectOptions);
 
 const vignetteEffect = new POSTPROCESSING.VignetteEffect({
     darkness: 0.5
@@ -244,7 +259,7 @@ const bloomEffect = new POSTPROCESSING.BloomEffect({
 bloomEffect.blendMode.opacity.value = 4;
 
 // postprocessing effect pass instance
-const effectPass = new POSTPROCESSING.EffectPass(
+effectPass = new POSTPROCESSING.EffectPass(
     camera,
     bloomEffect,
     vignetteEffect,
@@ -260,21 +275,9 @@ composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
 // postprocessing effect render pass
 composer.addPass(effectPass);
 
-//SOUND
-var audiosomnium = new Audio('/audio/thesomnium.mp3');
-//var audio = document.createElement("AUDIO")
-//document.body.appendChild(audio);
-//audio.src = "./audio/rain.m4a"
-// document.body.addEventListener("click", function() {
-//         audiosomnium.play()
-//         fadeout()
-//     })
-// var vol = 0.20;
-// var interval = 200; // 200ms interval
-
-
-function animate() {
+function animate(time) {
     requestAnimationFrame(animate)
+    TWEEN.update(time)
     cylinder.rotation.y += 0.001
     texture.offset.y -= 0.0006 // move forward
     texture.offset.x -= 0.0006
@@ -321,3 +324,31 @@ cylinderGui.add(cylinder.position, 'x')
 cylinderGui.add(cylinder.position, 'y')
 cylinderGui.add(cylinder.position, 'z')
 cylinderGui.open()
+
+var godRayGui = gui.addFolder('godRayGui')
+const paramsGodRayGui = {
+    'clampMax': effectPass.effects[1].godRaysMaterial.uniforms.clampMax.value,
+    'decay': effectPass.effects[1].godRaysMaterial.uniforms.decay.value,
+    'density': effectPass.effects[1].godRaysMaterial.uniforms.density.value,
+    'exposure': effectPass.effects[1].godRaysMaterial.uniforms.exposure.value,
+    'weight': effectPass.effects[1].godRaysMaterial.uniforms.weight.value
+}
+godRayGui.add(paramsGodRayGui, 'clampMax').onChange(() => {
+    effectPass.effects[1].godRaysMaterial.uniforms.clampMax.value = paramsGodRayGui.clampMax
+})
+godRayGui.add(paramsGodRayGui, 'decay').onChange(() => {
+    effectPass.effects[1].godRaysMaterial.uniforms.decay.value = paramsGodRayGui.decay
+})
+godRayGui.add(paramsGodRayGui, 'density').onChange(() => {
+    effectPass.effects[1].godRaysMaterial.uniforms.density.value = paramsGodRayGui.density
+})
+godRayGui.add(paramsGodRayGui, 'exposure').onChange(() => {
+    effectPass.effects[1].godRaysMaterial.uniforms.exposure.value = paramsGodRayGui.exposure
+})
+godRayGui.add(paramsGodRayGui, 'weight').onChange(() => {
+    effectPass.effects[1].godRaysMaterial.uniforms.weight.value = paramsGodRayGui.weight
+})
+godRayGui.add(sunMaterial, 'opacity')
+
+
+godRayGui.open()

@@ -24,7 +24,7 @@ const revealIntro = setTimeout(fadeInIntro, 3000)
  * using Image constructor.
  */
 function preloadTextures() {
-    const listTextures = ['/images/dark.jpg', '/images/colorfull.jpg', '/images/meteoritniy-dogd-nebo-meteoriti.jpg']
+    const listTextures = ['/images/dark.jpg', '/images/light.jpg', '/images/colorfull.jpg', '/images/meteor.jpg']
     const images = []
 
     for (let i = 0; i < listTextures.length; i++) {
@@ -137,19 +137,24 @@ function prepareLaunchHorizonEvent(event) {
         .to({ value: 0 }, timeToLaunch)
         .easing(easingLaunch)
 
+    const shutDownBloomEffect = new TWEEN.Tween(bloomEffect.blendMode.opacity)
+        .to({ value: 0 }, timeToLaunch)
+        .easing(TWEEN.Easing.Elastic.Out)
+
     const preparingForLauchSlowingSpeedDark = new TWEEN.Tween(moveForwardDark)
-        .to({ value: 0.0001 }, timeToLaunch)
+        .to({ value: -0.0006 }, timeToLaunch)
         .easing(easingLaunch)
 
     const preparingForLauchSlowingSpeedColourFull = new TWEEN.Tween(moveForwardColourFull)
-        .to({ value: 0.0006 }, timeToLaunch)
+        .to({ value: -0.0006 }, timeToLaunch)
         .easing(easingLaunch)
 
     const preparingForLauchSlowingSpeedMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
-        .to({ value: 0.0016 }, timeToLaunch)
+        .to({ value: -0.0006 }, timeToLaunch)
         .easing(easingLaunch)
 
-    // slowing rotation just before launch
+    shutDownBloomEffect.start()
+        // slowing rotation just before launch
     preparingForLauchSlowingTextureRotation.start()
     preparingForLauchSlowingGlobalRotation.start()
 
@@ -209,6 +214,7 @@ function firstPhaseEvent() {
 
     hideColourFull.start()
     showMeteoriti.start()
+
     showDark.start().onComplete(() => secondPhaseEvent())
 }
 
@@ -219,7 +225,7 @@ async function secondPhaseEvent() {
         .to({ opacity: 0 }, 2000)
         .easing(TWEEN.Easing.Circular.Out)
     const launchSpeedUpMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
-        .to({ value: 0.0206 }, 5000)
+        .to({ value: 0.0306 }, 5000)
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     hideDark.start()
@@ -238,7 +244,7 @@ async function thirdPhaseEvent() {
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     const speedUpRotation = new TWEEN.Tween(globalRotation)
-        .to({ value: 0.010 }, 2000)
+        .to({ value: 0.030 }, 3000)
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     speedUpRotation.start()
@@ -250,7 +256,7 @@ async function fourthPhaseEvent() {
     await new Promise(resolve => setTimeout(resolve, 2000))
 
     const speedUpRotation = new TWEEN.Tween(globalRotation)
-        .to({ value: 0.040 }, 2000)
+        .to({ value: 0.060 }, 3000)
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     speedUpRotation.start()
@@ -339,7 +345,7 @@ const secondMaterial = new THREE.MeshPhongMaterial({
 const secondCylinder = new THREE.Mesh(secondGeometry, secondMaterial)
 
 // third cylinder
-const thirdTexture = new THREE.TextureLoader().load('/images/meteor.jpeg')
+const thirdTexture = new THREE.TextureLoader().load('/images/meteor.jpg')
 thirdTexture.wrapS = THREE.RepeatWrapping
 thirdTexture.wrapT = THREE.MirroredRepeatWrapping
 thirdTexture.repeat.set(1, 1)
@@ -398,7 +404,7 @@ camera.lookAt(0, 0, 0)
 renderer.setSize(window.innerWidth, window.innerHeight)
 
 renderer.domElement.id = 'wormhole'
-    //TO CHANGE
+    //TO CHANGE -comment
 renderer.domElement.className = 'fadeOut'
 document.body.appendChild(renderer.domElement)
 
@@ -441,14 +447,12 @@ const godRaysEffectOptions = {
 
 const godRaysEffect = new POSTPROCESSING.GodRaysEffect(camera, sun, godRaysEffectOptions);
 
-const vignetteEffect = new POSTPROCESSING.VignetteEffect({
-    darkness: 0.5
-})
 
 const depthEffect = new POSTPROCESSING.RealisticBokehEffect({
     blendFunction: POSTPROCESSING.BlendFunction.ADD,
     focus: 2,
-    maxBlur: 5
+    maxBlur: 5,
+    focalLength: 24
 })
 
 const bloomEffect = new POSTPROCESSING.BloomEffect({

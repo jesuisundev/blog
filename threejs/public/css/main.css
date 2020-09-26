@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    background: black;
 }
 
 @keyframes move-background {
@@ -44,6 +45,9 @@ body {
     left: 0;
     bottom: 0;
     right: 0;
+    -webkit-transition: opacity 8s;
+    -moz-transition: opacity 8s;
+    transition: opacity 8s;
 }
 
 .stars {

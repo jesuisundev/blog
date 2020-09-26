@@ -8,10 +8,12 @@ const globalTextureRotation = { value: 0.0006 }
 const moveForwardDark = { value: 0.0006 }
 const moveForwardColourFull = { value: 0.0016 }
 const moveForwardMeteoriti = { value: 0.0056 }
+const moveForwardLight = { value: 0.0056 }
 
 const opacityDark = { value: 0.4 } // 0.4
 const opacityColorFull = { value: 0.4 } // 0.4
 const opacityMeteoriti = { value: 0.1 } // 0.1
+const opacityLight = { value: 0 }
 
 preloadTextures()
 preloadAudio()
@@ -52,7 +54,10 @@ async function entrypointExperience(event) {
 
     somnium.play()
 
-    const revealWormhole = setTimeout(() => document.getElementById('wormhole').className = 'fadeIn', 35000)
+    const revealWormhole = setTimeout(() => {
+        document.getElementById('base-space').className = 'background-container fadeOut'
+        document.getElementById('wormhole').className = 'fadeIn'
+    }, 35000)
 
     await introStoryEvent()
     await horizonAwakeningEvent()
@@ -122,26 +127,27 @@ function prepareLaunchHorizonEvent(event) {
     oceans.fade(0, 1, 5000)
 
     const timeToLaunch = 12500
+    const easingLaunch = TWEEN.Easing.Sinusoidal.Out
 
     const preparingForLauchSlowingTextureRotation = new TWEEN.Tween(globalTextureRotation)
         .to({ value: 0.0001 }, timeToLaunch)
-        .easing(TWEEN.Easing.Exponential.In)
+        .easing(easingLaunch)
 
     const preparingForLauchSlowingGlobalRotation = new TWEEN.Tween(globalRotation)
         .to({ value: 0 }, timeToLaunch)
-        .easing(TWEEN.Easing.Exponential.In)
+        .easing(easingLaunch)
 
     const preparingForLauchSlowingSpeedDark = new TWEEN.Tween(moveForwardDark)
         .to({ value: 0.0001 }, timeToLaunch)
-        .easing(TWEEN.Easing.Exponential.In)
+        .easing(easingLaunch)
 
     const preparingForLauchSlowingSpeedColourFull = new TWEEN.Tween(moveForwardColourFull)
         .to({ value: 0.0006 }, timeToLaunch)
-        .easing(TWEEN.Easing.Exponential.In)
+        .easing(easingLaunch)
 
     const preparingForLauchSlowingSpeedMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
         .to({ value: 0.0016 }, timeToLaunch)
-        .easing(TWEEN.Easing.Exponential.In)
+        .easing(easingLaunch)
 
     // slowing rotation just before launch
     preparingForLauchSlowingTextureRotation.start()
@@ -154,22 +160,34 @@ function prepareLaunchHorizonEvent(event) {
 }
 
 function launchHorizonEvent() {
+    const shutDownBloomEffect = new TWEEN.Tween(bloomEffect.blendMode.opacity)
+        .to({ value: 0 }, 500)
+        .easing(TWEEN.Easing.Elastic.Out)
+
     const launchSpeedUpDark = new TWEEN.Tween(moveForwardDark)
-        .to({ value: 0.0056 }, 2000)
+        .to({ value: 0.0076 }, 2000)
         .easing(TWEEN.Easing.Elastic.Out)
 
     const launchSpeedUpColourFull = new TWEEN.Tween(moveForwardColourFull)
-        .to({ value: 0.0110 }, 2000)
+        .to({ value: 0.0130 }, 2000)
         .easing(TWEEN.Easing.Elastic.Out)
 
     const launchSpeedUpMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
-        .to({ value: 0.0106 }, 2000)
+        .to({ value: 0.0136 }, 2000)
         .easing(TWEEN.Easing.Elastic.Out)
 
+    const horizonExposure = new TWEEN.Tween(effectPass.effects[1].godRaysMaterial.uniforms.exposure)
+        .to({ value: 45 }, 35000)
+        .easing(TWEEN.Easing.Circular.In)
+
     // huge speed at launch
+    shutDownBloomEffect.start()
     launchSpeedUpDark.start()
     launchSpeedUpColourFull.start()
     launchSpeedUpMeteoriti.start()
+
+    // launch long exposure from horizon
+    horizonExposure.start().onComplete(() => enterParalelUniverse())
 
     // launch first event at the same time
     firstPhaseEvent()
@@ -177,14 +195,8 @@ function launchHorizonEvent() {
 
 // first phase is dark + meteoriti high speed
 function firstPhaseEvent() {
-    console.log('firstPhaseEvent')
-
     const showDark = new TWEEN.Tween(material)
         .to({ opacity: 1 }, 500)
-        .easing(TWEEN.Easing.Circular.Out)
-
-    const hideDark = new TWEEN.Tween(material)
-        .to({ opacity: 0 }, 2000)
         .easing(TWEEN.Easing.Circular.Out)
 
     const hideColourFull = new TWEEN.Tween(secondMaterial)
@@ -197,21 +209,64 @@ function firstPhaseEvent() {
 
     hideColourFull.start()
     showMeteoriti.start()
-    showDark.start().chain(hideDark)
+    showDark.start().onComplete(() => secondPhaseEvent())
 }
-// slowing speed before launch
-// const moveForwardDark = { value: 0.0006 }
-// const moveForwardColourFull = { value: 0.0016 }
-// const moveForwardMeteoriti = { value: 0.0056 }
 
+async function secondPhaseEvent() {
+    await new Promise(resolve => setTimeout(resolve, 6000))
 
+    const hideDark = new TWEEN.Tween(material)
+        .to({ opacity: 0 }, 2000)
+        .easing(TWEEN.Easing.Circular.Out)
+    const launchSpeedUpMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
+        .to({ value: 0.0206 }, 5000)
+        .easing(TWEEN.Easing.Sinusoidal.In)
 
+    hideDark.start()
+    launchSpeedUpMeteoriti.start().onComplete(() => thirdPhaseEvent())
+}
 
-// SLOW THEN LAUNCH
-// DIFFERENT CYLINDER FADEIN AND FADEOU WITH EASE
-// SHAKING CAMERA
-// MOVE CAMERA TO BOTTOM
-// BACKGROUND TO WHITE SLOWLY THEN FAST
+async function thirdPhaseEvent() {
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
+    const hideMeteoriti = new TWEEN.Tween(secondMaterial)
+        .to({ opacity: 0 }, 2000)
+        .easing(TWEEN.Easing.Circular.Out)
+
+    const showLight = new TWEEN.Tween(lightMaterial)
+        .to({ opacity: 1 }, 5000)
+        .easing(TWEEN.Easing.Sinusoidal.In)
+
+    const speedUpRotation = new TWEEN.Tween(globalRotation)
+        .to({ value: 0.010 }, 2000)
+        .easing(TWEEN.Easing.Sinusoidal.In)
+
+    speedUpRotation.start()
+    hideMeteoriti.start()
+    showLight.start()
+}
+
+async function fourthPhaseEvent() {
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
+    const speedUpRotation = new TWEEN.Tween(globalRotation)
+        .to({ value: 0.040 }, 2000)
+        .easing(TWEEN.Easing.Sinusoidal.In)
+
+    speedUpRotation.start()
+}
+
+async function enterParalelUniverse() {
+    scene.remove(cylinder)
+    scene.remove(secondCylinder)
+    scene.remove(thirdCylinder)
+    scene.remove(lightCylinder)
+
+    await new Promise(resolve => setTimeout(resolve, 3000))
+
+    document.getElementById('wormhole').className = 'fadeOut'
+    document.getElementById('base-space').className = 'background-container fadeIn'
+}
 
 // TEXT in black
 // some theory suggest that wormhole are leading to parallel universe
@@ -226,7 +281,8 @@ const renderer = new THREE.WebGLRenderer({
     powerPreference: "high-performance",
     antialias: false,
     stencil: false,
-    depth: false
+    depth: false,
+    alpha: true
 })
 const interaction = new THREE.Interaction(renderer, scene, camera);
 
@@ -283,7 +339,7 @@ const secondMaterial = new THREE.MeshPhongMaterial({
 const secondCylinder = new THREE.Mesh(secondGeometry, secondMaterial)
 
 // third cylinder
-const thirdTexture = new THREE.TextureLoader().load('/images/meteoritniy-dogd-nebo-meteoriti.jpg')
+const thirdTexture = new THREE.TextureLoader().load('/images/meteor.jpeg')
 thirdTexture.wrapS = THREE.RepeatWrapping
 thirdTexture.wrapT = THREE.MirroredRepeatWrapping
 thirdTexture.repeat.set(1, 1)
@@ -304,12 +360,35 @@ const thirdMaterial = new THREE.MeshPhongMaterial({
     opacity: opacityMeteoriti.value
 })
 
-console.log(thirdMaterial, 'thirdMaterial')
 const thirdCylinder = new THREE.Mesh(thirdGeometry, thirdMaterial)
+
+// light cylinder
+const lightTexture = new THREE.TextureLoader().load('/images/light.jpg')
+lightTexture.wrapS = THREE.RepeatWrapping
+lightTexture.wrapT = THREE.MirroredRepeatWrapping
+lightTexture.repeat.set(1, 1)
+const lightGeometry = new THREE.CylinderGeometry(
+    cylinderRadiusTop,
+    cylinderRadiusBottom,
+    cylinderHeight,
+    cylinderRadiusSegments,
+    cylinderHeightSegments,
+    cylinderOpenEnded
+)
+const lightMaterial = new THREE.MeshPhongMaterial({
+    transparent: true,
+    needsUpdate: true,
+    side: THREE.DoubleSide,
+    map: lightTexture,
+    blending: THREE.AdditiveBlending,
+    opacity: opacityLight.value
+})
+const lightCylinder = new THREE.Mesh(lightGeometry, lightMaterial)
 
 scene.add(cylinder)
 scene.add(secondCylinder)
 scene.add(thirdCylinder)
+scene.add(lightCylinder)
 
 camera.position.x = 0
 camera.position.y = 10
@@ -320,7 +399,7 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 
 renderer.domElement.id = 'wormhole'
     //TO CHANGE
-    //renderer.domElement.className = 'fadeOut'
+renderer.domElement.className = 'fadeOut'
 document.body.appendChild(renderer.domElement)
 
 const light = new THREE.AmbientLight(0xFFFFFF, 1)
@@ -399,6 +478,7 @@ composer.addPass(effectPass);
 function animate(time) {
     requestAnimationFrame(animate)
     TWEEN.update(time)
+
     cylinder.rotation.y += globalRotation.value
     texture.offset.y -= moveForwardDark.value
     texture.offset.x -= globalTextureRotation.value
@@ -410,6 +490,10 @@ function animate(time) {
     thirdCylinder.rotation.y += globalRotation.value
     thirdTexture.offset.y -= moveForwardMeteoriti.value
     thirdTexture.offset.x -= globalTextureRotation.value
+
+    lightCylinder.rotation.y += globalRotation.value
+    lightTexture.offset.y -= moveForwardLight.value
+    lightTexture.offset.x -= globalTextureRotation.value
 
     composer.render()
 }
@@ -465,6 +549,5 @@ godRayGui.add(paramsGodRayGui, 'weight').onChange(() => {
     effectPass.effects[1].godRaysMaterial.uniforms.weight.value = paramsGodRayGui.weight
 })
 godRayGui.add(sunMaterial, 'opacity')
-
 
 godRayGui.open()

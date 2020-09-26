@@ -2,6 +2,17 @@ let somnium, oceans
 let effectPass
 let revealCallToAction
 
+const globalRotation = { value: 0.001 }
+const globalTextureRotation = { value: 0.0006 }
+
+const moveForwardDark = { value: 0.0006 }
+const moveForwardColourFull = { value: 0.0016 }
+const moveForwardMeteoriti = { value: 0.0056 }
+
+const opacityDark = { value: 0.4 } // 0.4
+const opacityColorFull = { value: 0.4 } // 0.4
+const opacityMeteoriti = { value: 0.1 } // 0.1
+
 preloadTextures()
 preloadAudio()
 const revealIntro = setTimeout(fadeInIntro, 3000)
@@ -100,17 +111,98 @@ async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
     })
 }
 
-function launchHorizonEvent(event) {
+function prepareLaunchHorizonEvent(event) {
     event.preventDefault()
 
     document.getElementById('callToAction').className = 'fadeOut'
 
-    // Fade out the first sound and speed up the second.
     somnium.fade(1, 0, 1500)
     oceans.volume(0)
     oceans.play()
     oceans.fade(0, 1, 5000)
+
+    const timeToLaunch = 12500
+
+    const preparingForLauchSlowingTextureRotation = new TWEEN.Tween(globalTextureRotation)
+        .to({ value: 0.0001 }, timeToLaunch)
+        .easing(TWEEN.Easing.Exponential.In)
+
+    const preparingForLauchSlowingGlobalRotation = new TWEEN.Tween(globalRotation)
+        .to({ value: 0 }, timeToLaunch)
+        .easing(TWEEN.Easing.Exponential.In)
+
+    const preparingForLauchSlowingSpeedDark = new TWEEN.Tween(moveForwardDark)
+        .to({ value: 0.0001 }, timeToLaunch)
+        .easing(TWEEN.Easing.Exponential.In)
+
+    const preparingForLauchSlowingSpeedColourFull = new TWEEN.Tween(moveForwardColourFull)
+        .to({ value: 0.0006 }, timeToLaunch)
+        .easing(TWEEN.Easing.Exponential.In)
+
+    const preparingForLauchSlowingSpeedMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
+        .to({ value: 0.0016 }, timeToLaunch)
+        .easing(TWEEN.Easing.Exponential.In)
+
+    // slowing rotation just before launch
+    preparingForLauchSlowingTextureRotation.start()
+    preparingForLauchSlowingGlobalRotation.start()
+
+    // slowing speed just before launch
+    preparingForLauchSlowingSpeedDark.start()
+    preparingForLauchSlowingSpeedColourFull.start()
+    preparingForLauchSlowingSpeedMeteoriti.start().onComplete(() => launchHorizonEvent())
 }
+
+function launchHorizonEvent() {
+    const launchSpeedUpDark = new TWEEN.Tween(moveForwardDark)
+        .to({ value: 0.0056 }, 2000)
+        .easing(TWEEN.Easing.Elastic.Out)
+
+    const launchSpeedUpColourFull = new TWEEN.Tween(moveForwardColourFull)
+        .to({ value: 0.0110 }, 2000)
+        .easing(TWEEN.Easing.Elastic.Out)
+
+    const launchSpeedUpMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
+        .to({ value: 0.0106 }, 2000)
+        .easing(TWEEN.Easing.Elastic.Out)
+
+    // huge speed at launch
+    launchSpeedUpDark.start()
+    launchSpeedUpColourFull.start()
+    launchSpeedUpMeteoriti.start()
+
+    // launch first event at the same time
+    firstPhaseEvent()
+}
+
+// first phase is dark + meteoriti high speed
+function firstPhaseEvent() {
+    console.log('firstPhaseEvent')
+
+    const showDark = new TWEEN.Tween(material)
+        .to({ opacity: 1 }, 500)
+        .easing(TWEEN.Easing.Circular.Out)
+
+    const hideDark = new TWEEN.Tween(material)
+        .to({ opacity: 0 }, 2000)
+        .easing(TWEEN.Easing.Circular.Out)
+
+    const hideColourFull = new TWEEN.Tween(secondMaterial)
+        .to({ opacity: 0 }, 500)
+        .easing(TWEEN.Easing.Circular.Out)
+
+    const showMeteoriti = new TWEEN.Tween(thirdMaterial)
+        .to({ opacity: 1 }, 500)
+        .easing(TWEEN.Easing.Circular.Out)
+
+    hideColourFull.start()
+    showMeteoriti.start()
+    showDark.start().chain(hideDark)
+}
+// slowing speed before launch
+// const moveForwardDark = { value: 0.0006 }
+// const moveForwardColourFull = { value: 0.0016 }
+// const moveForwardMeteoriti = { value: 0.0056 }
 
 
 
@@ -159,10 +251,11 @@ const geometry = new THREE.CylinderGeometry(
 )
 const material = new THREE.MeshPhongMaterial({
     transparent: true,
+    needsUpdate: true,
     side: THREE.DoubleSide,
     map: texture,
     blending: THREE.AdditiveBlending,
-    opacity: 0.4
+    opacity: opacityDark.value
 })
 const cylinder = new THREE.Mesh(geometry, material)
 
@@ -181,10 +274,11 @@ const secondGeometry = new THREE.CylinderGeometry(
 )
 const secondMaterial = new THREE.MeshPhongMaterial({
     transparent: true,
+    needsUpdate: true,
     side: THREE.DoubleSide,
     map: secondTexture,
     blending: THREE.AdditiveBlending,
-    opacity: 0.4
+    opacity: opacityColorFull.value
 })
 const secondCylinder = new THREE.Mesh(secondGeometry, secondMaterial)
 
@@ -203,11 +297,14 @@ const thirdGeometry = new THREE.CylinderGeometry(
 )
 const thirdMaterial = new THREE.MeshPhongMaterial({
     transparent: true,
+    needsUpdate: true,
     side: THREE.DoubleSide,
     map: thirdTexture,
     blending: THREE.AdditiveBlending,
-    opacity: 0.1
+    opacity: opacityMeteoriti.value
 })
+
+console.log(thirdMaterial, 'thirdMaterial')
 const thirdCylinder = new THREE.Mesh(thirdGeometry, thirdMaterial)
 
 scene.add(cylinder)
@@ -223,11 +320,10 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 
 renderer.domElement.id = 'wormhole'
     //TO CHANGE
-renderer.domElement.className = 'fadeOut'
+    //renderer.domElement.className = 'fadeOut'
 document.body.appendChild(renderer.domElement)
-const color = 0xFFFFFF
-const intensity = 1
-const light = new THREE.AmbientLight(color, intensity)
+
+const light = new THREE.AmbientLight(0xFFFFFF, 1)
 scene.add(light)
 
 window.addEventListener('resize', () => {
@@ -248,9 +344,8 @@ const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 sun.frustumCulled = false;
 sun.matrixAutoUpdate = false;
 scene.add(sun)
-sun.cursor = 'pointer';
-sun.on('click', event => launchHorizonEvent(event));
-document.getElementById('callToAction').addEventListener('click', event => launchHorizonEvent(event))
+
+document.getElementById('callToAction').addEventListener('click', event => prepareLaunchHorizonEvent(event))
 
 const godRaysEffectOptions = {
     height: 480,
@@ -289,7 +384,6 @@ bloomEffect.blendMode.opacity.value = 4;
 effectPass = new POSTPROCESSING.EffectPass(
     camera,
     bloomEffect,
-    vignetteEffect,
     depthEffect,
     godRaysEffect
 );
@@ -305,24 +399,19 @@ composer.addPass(effectPass);
 function animate(time) {
     requestAnimationFrame(animate)
     TWEEN.update(time)
-    cylinder.rotation.y += 0.001
-    texture.offset.y -= 0.0006 // move forward
-    texture.offset.x -= 0.0006
+    cylinder.rotation.y += globalRotation.value
+    texture.offset.y -= moveForwardDark.value
+    texture.offset.x -= globalTextureRotation.value
 
-    secondCylinder.rotation.y += 0.001
-    secondTexture.offset.y -= 0.0016
-    secondTexture.offset.x -= 0.0006
+    secondCylinder.rotation.y += globalRotation.value
+    secondTexture.offset.y -= moveForwardColourFull.value
+    secondTexture.offset.x -= globalTextureRotation.value
 
-    thirdCylinder.rotation.y += 0.001
-    thirdTexture.offset.y -= 0.0056
-    thirdTexture.offset.x -= 0.0006
-        // texture.offset.y %= 1
-        // texture.needsUpdate = true
-        // TODO => cant change geometry after its created
-        // cylinder.geometry.parameters.radiusBottom += 1
+    thirdCylinder.rotation.y += globalRotation.value
+    thirdTexture.offset.y -= moveForwardMeteoriti.value
+    thirdTexture.offset.x -= globalTextureRotation.value
+
     composer.render()
-        //renderer.render(scene, camera)
-        //renderer.render(scene, camera)
 }
 window.scene = scene
 animate()

@@ -3,16 +3,20 @@ let effectPass
 let revealCallToAction
 
 const globalRotation = { value: 0.001 }
-const globalTextureRotation = { value: 0.0006 }
+
+const textureRotationDark = { value: 0.0006 }
+const textureRotationColourFull = { value: 0.0006 }
+const textureRotationWater = { value: 0.0040 }
+const textureRotationLight = { value: 0.0006 }
 
 const moveForwardDark = { value: 0.0006 }
 const moveForwardColourFull = { value: 0.0016 }
-const moveForwardMeteoriti = { value: 0.0056 }
+const moveForwardWater = { value: 0.0056 }
 const moveForwardLight = { value: 0.0056 }
 
-const opacityDark = { value: 0.4 } // 0.4
-const opacityColorFull = { value: 0.4 } // 0.4
-const opacityMeteoriti = { value: 0.1 } // 0.1
+const opacityDark = { value: 0.4 }
+const opacityColorFull = { value: 0.4 }
+const opacityWater = { value: 0 }
 const opacityLight = { value: 0 }
 
 preloadTextures()
@@ -24,7 +28,7 @@ const revealIntro = setTimeout(fadeInIntro, 3000)
  * using Image constructor.
  */
 function preloadTextures() {
-    const listTextures = ['/images/dark.jpg', '/images/light.jpg', '/images/colorfull.jpg', '/images/meteor.jpg']
+    const listTextures = ['/images/dark.jpg', '/images/light.jpg', '/images/colorfull.jpg', '/images/water.jpg']
     const images = []
 
     for (let i = 0; i < listTextures.length; i++) {
@@ -127,57 +131,78 @@ function prepareLaunchHorizonEvent(event) {
     oceans.fade(0, 1, 5000)
 
     const timeToLaunch = 12500
-    const easingLaunch = TWEEN.Easing.Sinusoidal.Out
+    const easingHideAndSpeed = TWEEN.Easing.Quintic.In
+    const easingRotation = TWEEN.Easing.Quintic.Out
 
-    const preparingForLauchSlowingTextureRotation = new TWEEN.Tween(globalTextureRotation)
+    const slowingTextureRotationDark = new TWEEN.Tween(textureRotationDark)
         .to({ value: 0.0001 }, timeToLaunch)
-        .easing(easingLaunch)
+        .easing(easingRotation)
 
-    const preparingForLauchSlowingGlobalRotation = new TWEEN.Tween(globalRotation)
+    const slowingTextureRotationColourFull = new TWEEN.Tween(textureRotationColourFull)
+        .to({ value: 0.0001 }, timeToLaunch)
+        .easing(easingRotation)
+
+    const slowingTextureRotationLight = new TWEEN.Tween(textureRotationLight)
+        .to({ value: 0.0001 }, timeToLaunch)
+        .easing(easingRotation)
+
+    const slowingGlobalRotation = new TWEEN.Tween(globalRotation)
         .to({ value: 0 }, timeToLaunch)
-        .easing(easingLaunch)
+        .easing(easingRotation)
 
     const shutDownBloomEffect = new TWEEN.Tween(bloomEffect.blendMode.opacity)
         .to({ value: 0 }, timeToLaunch)
         .easing(TWEEN.Easing.Elastic.Out)
 
-    const preparingForLauchSlowingSpeedDark = new TWEEN.Tween(moveForwardDark)
-        .to({ value: -0.0006 }, timeToLaunch)
-        .easing(easingLaunch)
+    const hideDark = new TWEEN.Tween(material)
+        .to({ opacity: 0.1 }, timeToLaunch)
+        .easing(easingHideAndSpeed)
 
-    const preparingForLauchSlowingSpeedColourFull = new TWEEN.Tween(moveForwardColourFull)
-        .to({ value: -0.0006 }, timeToLaunch)
-        .easing(easingLaunch)
+    const hideColourFull = new TWEEN.Tween(secondMaterial)
+        .to({ opacity: 0 }, timeToLaunch)
+        .easing(easingHideAndSpeed)
 
-    const preparingForLauchSlowingSpeedMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
-        .to({ value: -0.0006 }, timeToLaunch)
-        .easing(easingLaunch)
+    const hideWater = new TWEEN.Tween(thirdMaterial)
+        .to({ opacity: 0 }, timeToLaunch)
+        .easing(easingHideAndSpeed)
 
+    const slowingSpeedDark = new TWEEN.Tween(moveForwardDark)
+        .to({ value: 0.0001 }, timeToLaunch)
+        .easing(easingHideAndSpeed)
+
+    const slowingSpeedColourFull = new TWEEN.Tween(moveForwardColourFull)
+        .to({ value: 0.0001 }, timeToLaunch)
+        .easing(easingHideAndSpeed)
+
+    const slowingSpeedWater = new TWEEN.Tween(moveForwardWater)
+        .to({ value: 0.0001 }, timeToLaunch)
+        .easing(easingHideAndSpeed)
+
+    // leave space
     shutDownBloomEffect.start()
-        // slowing rotation just before launch
-    preparingForLauchSlowingTextureRotation.start()
-    preparingForLauchSlowingGlobalRotation.start()
+    hideColourFull.start()
+    hideDark.start()
+    hideWater.start()
 
-    // slowing speed just before launch
-    preparingForLauchSlowingSpeedDark.start()
-    preparingForLauchSlowingSpeedColourFull.start()
-    preparingForLauchSlowingSpeedMeteoriti.start().onComplete(() => launchHorizonEvent())
+    // slowing general rotation
+    slowingTextureRotationDark.start()
+    slowingTextureRotationColourFull.start()
+    slowingTextureRotationLight.start()
+    slowingGlobalRotation.start()
+
+    // slowing general speed
+    slowingSpeedDark.start()
+    slowingSpeedColourFull.start()
+    slowingSpeedWater.start().onComplete(() => launchHorizonEvent())
 }
 
 function launchHorizonEvent() {
-    const shutDownBloomEffect = new TWEEN.Tween(bloomEffect.blendMode.opacity)
-        .to({ value: 0 }, 500)
-        .easing(TWEEN.Easing.Elastic.Out)
-
-    const launchSpeedUpDark = new TWEEN.Tween(moveForwardDark)
+    textureRotationDark.value = 0.0040
+    const speedUpDark = new TWEEN.Tween(moveForwardDark)
         .to({ value: 0.0076 }, 2000)
         .easing(TWEEN.Easing.Elastic.Out)
 
-    const launchSpeedUpColourFull = new TWEEN.Tween(moveForwardColourFull)
-        .to({ value: 0.0130 }, 2000)
-        .easing(TWEEN.Easing.Elastic.Out)
-
-    const launchSpeedUpMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
+    const speedUpWater = new TWEEN.Tween(moveForwardWater)
         .to({ value: 0.0136 }, 2000)
         .easing(TWEEN.Easing.Elastic.Out)
 
@@ -186,10 +211,8 @@ function launchHorizonEvent() {
         .easing(TWEEN.Easing.Circular.In)
 
     // huge speed at launch
-    shutDownBloomEffect.start()
-    launchSpeedUpDark.start()
-    launchSpeedUpColourFull.start()
-    launchSpeedUpMeteoriti.start()
+    speedUpDark.start()
+    speedUpWater.start()
 
     // launch long exposure from horizon
     horizonExposure.start().onComplete(() => enterParalelUniverse())
@@ -198,23 +221,17 @@ function launchHorizonEvent() {
     firstPhaseEvent()
 }
 
-// first phase is dark + meteoriti high speed
+// first phase is dark + Water high speed
 function firstPhaseEvent() {
     const showDark = new TWEEN.Tween(material)
         .to({ opacity: 1 }, 500)
         .easing(TWEEN.Easing.Circular.Out)
 
-    const hideColourFull = new TWEEN.Tween(secondMaterial)
-        .to({ opacity: 0 }, 500)
+    const showWater = new TWEEN.Tween(thirdMaterial)
+        .to({ opacity: 0.3 }, 500)
         .easing(TWEEN.Easing.Circular.Out)
 
-    const showMeteoriti = new TWEEN.Tween(thirdMaterial)
-        .to({ opacity: 1 }, 500)
-        .easing(TWEEN.Easing.Circular.Out)
-
-    hideColourFull.start()
-    showMeteoriti.start()
-
+    showWater.start()
     showDark.start().onComplete(() => secondPhaseEvent())
 }
 
@@ -222,25 +239,19 @@ async function secondPhaseEvent() {
     await new Promise(resolve => setTimeout(resolve, 6000))
 
     const hideDark = new TWEEN.Tween(material)
-        .to({ opacity: 0 }, 2000)
+        .to({ opacity: 0 }, 3000)
         .easing(TWEEN.Easing.Circular.Out)
-    const launchSpeedUpMeteoriti = new TWEEN.Tween(moveForwardMeteoriti)
-        .to({ value: 0.0306 }, 5000)
-        .easing(TWEEN.Easing.Sinusoidal.In)
 
-    hideDark.start()
-    launchSpeedUpMeteoriti.start().onComplete(() => thirdPhaseEvent())
+    hideDark.start().onComplete(() => thirdPhaseEvent())
 }
 
 async function thirdPhaseEvent() {
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    const hideMeteoriti = new TWEEN.Tween(secondMaterial)
+    const hideWater = new TWEEN.Tween(secondMaterial)
         .to({ opacity: 0 }, 2000)
         .easing(TWEEN.Easing.Circular.Out)
 
     const showLight = new TWEEN.Tween(lightMaterial)
-        .to({ opacity: 1 }, 5000)
+        .to({ opacity: 1 }, 3000)
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     const speedUpRotation = new TWEEN.Tween(globalRotation)
@@ -248,7 +259,7 @@ async function thirdPhaseEvent() {
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     speedUpRotation.start()
-    hideMeteoriti.start()
+    hideWater.start()
     showLight.start()
 }
 
@@ -345,7 +356,7 @@ const secondMaterial = new THREE.MeshPhongMaterial({
 const secondCylinder = new THREE.Mesh(secondGeometry, secondMaterial)
 
 // third cylinder
-const thirdTexture = new THREE.TextureLoader().load('/images/meteor.jpg')
+const thirdTexture = new THREE.TextureLoader().load('/images/water.jpg')
 thirdTexture.wrapS = THREE.RepeatWrapping
 thirdTexture.wrapT = THREE.MirroredRepeatWrapping
 thirdTexture.repeat.set(1, 1)
@@ -363,7 +374,7 @@ const thirdMaterial = new THREE.MeshPhongMaterial({
     side: THREE.DoubleSide,
     map: thirdTexture,
     blending: THREE.AdditiveBlending,
-    opacity: opacityMeteoriti.value
+    opacity: opacityWater.value
 })
 
 const thirdCylinder = new THREE.Mesh(thirdGeometry, thirdMaterial)
@@ -423,6 +434,7 @@ const sunMaterial = new THREE.MeshBasicMaterial({
     fog: true,
     opacity: 1
 });
+
 
 const sunGeometry = new THREE.SphereBufferGeometry(0.25, 32, 32);
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
@@ -485,19 +497,19 @@ function animate(time) {
 
     cylinder.rotation.y += globalRotation.value
     texture.offset.y -= moveForwardDark.value
-    texture.offset.x -= globalTextureRotation.value
+    texture.offset.x -= textureRotationDark.value
 
     secondCylinder.rotation.y += globalRotation.value
     secondTexture.offset.y -= moveForwardColourFull.value
-    secondTexture.offset.x -= globalTextureRotation.value
+    secondTexture.offset.x -= textureRotationColourFull.value
 
     thirdCylinder.rotation.y += globalRotation.value
-    thirdTexture.offset.y -= moveForwardMeteoriti.value
-    thirdTexture.offset.x -= globalTextureRotation.value
+    thirdTexture.offset.y -= moveForwardWater.value
+    thirdTexture.offset.x -= textureRotationWater.value
 
     lightCylinder.rotation.y += globalRotation.value
     lightTexture.offset.y -= moveForwardLight.value
-    lightTexture.offset.x -= globalTextureRotation.value
+    lightTexture.offset.x -= textureRotationLight.value
 
     composer.render()
 }

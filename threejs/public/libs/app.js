@@ -319,7 +319,7 @@ async function showCredits() {
             document.getElementById('outro').style.zIndex = "9999"
             document.getElementById('outro').className = 'fadeIn'
             resolve()
-        }, 3000)
+        }, 4500)
     })
 }
 

@@ -1,6 +1,7 @@
 let somnium, oceans
 let effectPass
 let revealCallToAction
+let needRender = false
 
 const globalRotation = { value: 0.001 }
 
@@ -60,6 +61,7 @@ async function entrypointExperience(event) {
 
     const revealWormhole = setTimeout(() => {
         document.getElementById('base-space').className = 'background-container fadeOut'
+        needRender = true
         document.getElementById('wormhole').className = 'fadeIn'
     }, 35000)
 
@@ -344,7 +346,7 @@ const texture = new THREE.TextureLoader().load('/images/dark.jpg')
 texture.wrapS = THREE.RepeatWrapping
 texture.wrapT = THREE.RepeatWrapping
 texture.repeat.set(1, 1)
-const geometry = new THREE.CylinderGeometry(
+const geometry = new THREE.CylinderBufferGeometry(
     cylinderRadiusTop,
     cylinderRadiusBottom,
     cylinderHeight,
@@ -352,6 +354,7 @@ const geometry = new THREE.CylinderGeometry(
     cylinderHeightSegments,
     cylinderOpenEnded
 )
+
 const material = new THREE.MeshPhongMaterial({
     transparent: true,
     needsUpdate: true,
@@ -367,14 +370,7 @@ const secondTexture = new THREE.TextureLoader().load('/images/colorfull.jpg')
 secondTexture.wrapS = THREE.RepeatWrapping
 secondTexture.wrapT = THREE.MirroredRepeatWrapping
 secondTexture.repeat.set(1, 1)
-const secondGeometry = new THREE.CylinderGeometry(
-    cylinderRadiusTop,
-    cylinderRadiusBottom,
-    cylinderHeight,
-    cylinderRadiusSegments,
-    cylinderHeightSegments,
-    cylinderOpenEnded
-)
+
 const secondMaterial = new THREE.MeshPhongMaterial({
     transparent: true,
     needsUpdate: true,
@@ -383,21 +379,14 @@ const secondMaterial = new THREE.MeshPhongMaterial({
     blending: THREE.AdditiveBlending,
     opacity: opacityColorFull.value
 })
-const secondCylinder = new THREE.Mesh(secondGeometry, secondMaterial)
+const secondCylinder = new THREE.Mesh(geometry, secondMaterial)
 
 // third cylinder
 const thirdTexture = new THREE.TextureLoader().load('/images/water.jpg')
 thirdTexture.wrapS = THREE.RepeatWrapping
 thirdTexture.wrapT = THREE.MirroredRepeatWrapping
 thirdTexture.repeat.set(1, 1)
-const thirdGeometry = new THREE.CylinderGeometry(
-    cylinderRadiusTop,
-    cylinderRadiusBottom,
-    cylinderHeight,
-    cylinderRadiusSegments,
-    cylinderHeightSegments,
-    cylinderOpenEnded
-)
+
 const thirdMaterial = new THREE.MeshPhongMaterial({
     transparent: true,
     needsUpdate: true,
@@ -407,21 +396,14 @@ const thirdMaterial = new THREE.MeshPhongMaterial({
     opacity: opacityWater.value
 })
 
-const thirdCylinder = new THREE.Mesh(thirdGeometry, thirdMaterial)
+const thirdCylinder = new THREE.Mesh(geometry, thirdMaterial)
 
 // light cylinder
 const lightTexture = new THREE.TextureLoader().load('/images/light.jpg')
 lightTexture.wrapS = THREE.RepeatWrapping
 lightTexture.wrapT = THREE.MirroredRepeatWrapping
 lightTexture.repeat.set(1, 1)
-const lightGeometry = new THREE.CylinderGeometry(
-    cylinderRadiusTop,
-    cylinderRadiusBottom,
-    cylinderHeight,
-    cylinderRadiusSegments,
-    cylinderHeightSegments,
-    cylinderOpenEnded
-)
+
 const lightMaterial = new THREE.MeshPhongMaterial({
     transparent: true,
     needsUpdate: true,
@@ -430,7 +412,7 @@ const lightMaterial = new THREE.MeshPhongMaterial({
     blending: THREE.AdditiveBlending,
     opacity: opacityLight.value
 })
-const lightCylinder = new THREE.Mesh(lightGeometry, lightMaterial)
+const lightCylinder = new THREE.Mesh(geometry, lightMaterial)
 
 scene.add(cylinder)
 scene.add(secondCylinder)
@@ -482,7 +464,7 @@ const godRaysEffectOptions = {
     density: 1.2,
     decay: 0.92,
     weight: 1,
-    exposure: 0.8, // tweak this to make the final effect
+    exposure: 0.8,
     samples: 60,
     clampMax: 1.0
 }
@@ -522,78 +504,28 @@ composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
 composer.addPass(effectPass);
 
 function animate(time) {
+    if (needRender) {
+        TWEEN.update(time)
+
+        cylinder.rotation.y += globalRotation.value
+        texture.offset.y -= moveForwardDark.value
+        texture.offset.x -= textureRotationDark.value
+
+        secondCylinder.rotation.y += globalRotation.value
+        secondTexture.offset.y -= moveForwardColourFull.value
+        secondTexture.offset.x -= textureRotationColourFull.value
+
+        thirdCylinder.rotation.y += globalRotation.value
+        thirdTexture.offset.y -= moveForwardWater.value
+        thirdTexture.offset.x -= textureRotationWater.value
+
+        lightCylinder.rotation.y += globalRotation.value
+        lightTexture.offset.y -= moveForwardLight.value
+        lightTexture.offset.x -= textureRotationLight.value
+
+        composer.render()
+    }
     requestAnimationFrame(animate)
-    TWEEN.update(time)
-
-    cylinder.rotation.y += globalRotation.value
-    texture.offset.y -= moveForwardDark.value
-    texture.offset.x -= textureRotationDark.value
-
-    secondCylinder.rotation.y += globalRotation.value
-    secondTexture.offset.y -= moveForwardColourFull.value
-    secondTexture.offset.x -= textureRotationColourFull.value
-
-    thirdCylinder.rotation.y += globalRotation.value
-    thirdTexture.offset.y -= moveForwardWater.value
-    thirdTexture.offset.x -= textureRotationWater.value
-
-    lightCylinder.rotation.y += globalRotation.value
-    lightTexture.offset.y -= moveForwardLight.value
-    lightTexture.offset.x -= textureRotationLight.value
-
-    composer.render()
 }
 window.scene = scene
 animate()
-
-// dat gui
-var gui = new dat.GUI()
-var cameraGui = gui.addFolder('camera position')
-cameraGui.add(camera.position, 'x')
-cameraGui.add(camera.position, 'y')
-cameraGui.add(camera.position, 'z')
-cameraGui.open()
-
-var cameraGui = gui.addFolder('camera projection')
-cameraGui.add(camera, 'fov')
-cameraGui.open()
-
-var lightGui = gui.addFolder('light position')
-lightGui.add(light.position, 'x')
-lightGui.add(light.position, 'y')
-lightGui.add(light.position, 'z')
-lightGui.open()
-
-var cylinderGui = gui.addFolder('cylinder')
-
-cylinderGui.add(cylinder.position, 'x')
-cylinderGui.add(cylinder.position, 'y')
-cylinderGui.add(cylinder.position, 'z')
-cylinderGui.open()
-
-var godRayGui = gui.addFolder('godRayGui')
-const paramsGodRayGui = {
-    'clampMax': effectPass.effects[1].godRaysMaterial.uniforms.clampMax.value,
-    'decay': effectPass.effects[1].godRaysMaterial.uniforms.decay.value,
-    'density': effectPass.effects[1].godRaysMaterial.uniforms.density.value,
-    'exposure': effectPass.effects[1].godRaysMaterial.uniforms.exposure.value,
-    'weight': effectPass.effects[1].godRaysMaterial.uniforms.weight.value
-}
-godRayGui.add(paramsGodRayGui, 'clampMax').onChange(() => {
-    effectPass.effects[1].godRaysMaterial.uniforms.clampMax.value = paramsGodRayGui.clampMax
-})
-godRayGui.add(paramsGodRayGui, 'decay').onChange(() => {
-    effectPass.effects[1].godRaysMaterial.uniforms.decay.value = paramsGodRayGui.decay
-})
-godRayGui.add(paramsGodRayGui, 'density').onChange(() => {
-    effectPass.effects[1].godRaysMaterial.uniforms.density.value = paramsGodRayGui.density
-})
-godRayGui.add(paramsGodRayGui, 'exposure').onChange(() => {
-    effectPass.effects[1].godRaysMaterial.uniforms.exposure.value = paramsGodRayGui.exposure
-})
-godRayGui.add(paramsGodRayGui, 'weight').onChange(() => {
-    effectPass.effects[1].godRaysMaterial.uniforms.weight.value = paramsGodRayGui.weight
-})
-godRayGui.add(sunMaterial, 'opacity')
-
-godRayGui.open()

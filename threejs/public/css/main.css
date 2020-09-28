@@ -1,12 +1,7 @@
-body {
-    margin: 0;
-    background: black;
-}
-
-
 /**
-The base css stars background is a copy/pasta from Anastasia Goodwin !
-see https://codepen.io/agoodwin/pen/NMJoER
+The first initial static CSS stars background effect is a copy/pasta 
+from Anastasia Goodwin ! https://codepen.io/agoodwin/pen/NMJoER
+see her work: https://anastasiagoodwin.com/
 **/
 
 @keyframes move-background {
@@ -82,6 +77,16 @@ see https://codepen.io/agoodwin/pen/NMJoER
     -o-animation: move-background 70s linear infinite;
     -webkit-animation: move-background 70s linear infinite;
     animation: move-background 70s linear infinite;
+}
+
+
+/**
+Main CSS Wormhole JS
+**/
+
+body {
+    margin: 0;
+    background: black;
 }
 
 canvas {

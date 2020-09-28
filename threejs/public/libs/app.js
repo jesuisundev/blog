@@ -113,7 +113,6 @@ async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
 
     return await new Promise(resolve => {
         setTimeout(() => {
-            console.log(currentIdStory)
             document.getElementById(currentIdStory).className = 'fadeOut'
             resolve()
         }, time)
@@ -274,23 +273,55 @@ async function fourthPhaseEvent() {
 }
 
 async function enterParalelUniverse() {
-    scene.remove(cylinder)
-    scene.remove(secondCylinder)
     scene.remove(thirdCylinder)
     scene.remove(lightCylinder)
+    scene.remove(light)
+
+    const blueLight = new THREE.AmbientLight(0x000080, 1)
+    scene.add(blueLight)
 
     await new Promise(resolve => setTimeout(resolve, 3000))
 
     document.getElementById('wormhole').className = 'fadeOut'
-    document.getElementById('base-space').className = 'background-container fadeIn'
+
+    await new Promise(resolve => setTimeout(resolve, 9000))
+
+    scene.remove(sun)
+    sunMaterial.opacity = 0
+    document.getElementById('wormhole').className = 'fadeIn'
+
+    await fadeInWaitThenFadeOut('fourthStory', 8000)
+    showTeasingParalelUniverse()
 }
 
-// TEXT in black
-// some theory suggest that wormhole are leading to parallel universe
-// FADEIN SUR PLANET HEARTH
-// FADE IN CREDITS
-// FADE IN SHARE
-// END OF CHAPTER 1
+async function showTeasingParalelUniverse() {
+    globalRotation.value = 0.001
+    textureRotationDark.value = 0.0006
+    textureRotationColourFull.value = 0.0006
+    moveForwardDark.value = 0.0006
+    moveForwardColourFull.value = 0.0016
+
+    const showDark = new TWEEN.Tween(material)
+        .to({ opacity: 1 }, 10000)
+        .easing(TWEEN.Easing.Quadratic.In)
+
+    const showColorFull = new TWEEN.Tween(secondMaterial)
+        .to({ opacity: 1 }, 10000)
+        .easing(TWEEN.Easing.Quadratic.In)
+
+    showDark.start()
+    showColorFull.start().onComplete(async() => showCredits())
+}
+
+async function showCredits() {
+    await new Promise(resolve => {
+        setTimeout(() => {
+            document.getElementById('outro').style.zIndex = "9999"
+            document.getElementById('outro').className = 'fadeIn'
+            resolve()
+        }, 3000)
+    })
+}
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -301,7 +332,6 @@ const renderer = new THREE.WebGLRenderer({
     depth: false,
     alpha: true
 })
-const interaction = new THREE.Interaction(renderer, scene, camera);
 
 let cylinderRadiusTop = 1
 let cylinderRadiusBottom = 1

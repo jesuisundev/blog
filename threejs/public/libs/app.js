@@ -1,111 +1,72 @@
-let somnium, oceans
-let effectPass
-let revealCallToAction
+// Vanilla JS part
+
+// global variables needed to update event, audio, speed, rotation on the fly
+let somniumAudio, oceansAudio, effectPass
 let needRender = false
 
 const globalRotation = { value: 0.001 }
-
 const textureRotationDark = { value: 0.0006 }
 const textureRotationColourFull = { value: 0.0006 }
 const textureRotationWater = { value: 0.0040 }
 const textureRotationLight = { value: 0.0006 }
-
 const moveForwardDark = { value: 0.0006 }
 const moveForwardColourFull = { value: 0.0016 }
 const moveForwardWater = { value: 0.0056 }
 const moveForwardLight = { value: 0.0056 }
-
 const opacityDark = { value: 0.4 }
 const opacityColorFull = { value: 0.4 }
 const opacityWater = { value: 0 }
 const opacityLight = { value: 0 }
 
-preloadTextures()
-preloadAudio()
-const revealIntro = setTimeout(fadeInIntro, 3000)
+document.getElementById('launch').addEventListener('click', async event => entrypointExperience(event))
+document.getElementById('callToAction').addEventListener('click', event => prepareLaunchHorizonEvent(event))
 
-/**
- * Iterate on all the texture and preload them 
- * using Image constructor.
- */
-function preloadTextures() {
-    const listTextures = ['/images/dark.jpg', '/images/light.jpg', '/images/colorfull.jpg', '/images/water.jpg']
-    const images = []
+init()
 
-    for (let i = 0; i < listTextures.length; i++) {
-        images[i] = new Image();
-        images[i].src = listTextures[i];
+async function init() {
+    initAudio()
+    window.onload = () => {
+        document.getElementById('loading').remove()
+        document.getElementById('launch').className = 'fadeIn'
     }
 }
 
 /**
- * Iterate on all the audio and preload them using Howl
+ * iterate on all the audio and preload them using Howl
  */
-function preloadAudio() {
-    somnium = new Howl({
+function initAudio() {
+    somniumAudio = new Howl({
         src: ['/audio/thesomnium.mp3']
     })
-    oceans = new Howl({
+    oceansAudio = new Howl({
         src: ['/audio/oceans.mp3']
     })
 }
-document.getElementById('launch').addEventListener('click', async event => entrypointExperience(event))
 
+/**
+ * Entrypoint of the whole experience
+ * Will be trigger by the click on "lauch experience"
+ * 
+ * @param {Object} event event of the click
+ */
 async function entrypointExperience(event) {
     event.preventDefault()
 
     document.getElementById('intro').className = 'fadeOut'
-    const removeIntro = setTimeout(() => document.getElementById('intro').remove(), 6000)
+    setTimeout(() => document.getElementById('intro').remove(), 6000)
 
-    somnium.play()
-
-    const revealWormhole = setTimeout(() => {
-        document.getElementById('base-space').className = 'background-container fadeOut'
-        needRender = true
-        document.getElementById('wormhole').className = 'fadeIn'
-    }, 35000)
+    somniumAudio.play()
 
     await introStoryEvent()
+    await revealWormhole()
     await horizonAwakeningEvent()
     await revealCallToActionEvent()
-}
-
-function init() {
-    setTimeout(fadeInIntro, 3000)
-}
-
-function fadeInIntro() {
-    document.getElementById('intro').className = 'fadeIn'
 }
 
 async function introStoryEvent() {
     await fadeInWaitThenFadeOut('firstStory', 8000)
     await fadeInWaitThenFadeOut('secondStory', 7000)
-    await fadeInWaitThenFadeOut('thirdStory', 4000)
-}
-
-async function horizonAwakeningEvent() {
-    return await new Promise(resolve => {
-        setTimeout(() => {
-            const horizonGrowExposureCallToAction = new TWEEN.Tween(
-                effectPass.effects[1].godRaysMaterial.uniforms.exposure
-            ).to({ value: 4 }, 3000).easing(TWEEN.Easing.Cubic.In);
-            const horizonReduceExposureCallToAction = new TWEEN.Tween(
-                effectPass.effects[1].godRaysMaterial.uniforms.exposure
-            ).to({ value: 0.8 }, 3000).easing(TWEEN.Easing.Cubic.Out);
-            horizonGrowExposureCallToAction.start().chain(horizonReduceExposureCallToAction);
-            resolve()
-        }, 28000)
-    })
-}
-
-async function revealCallToActionEvent() {
-    return await new Promise(resolve => {
-        setTimeout(() => {
-            document.getElementById("callToAction").style.display = "block"
-            resolve()
-        }, 3000)
-    })
+    await fadeInWaitThenFadeOut('thirdStory', 5000)
 }
 
 async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
@@ -121,15 +82,61 @@ async function fadeInWaitThenFadeOut(currentIdStory, time = 1000) {
     })
 }
 
+async function revealWormhole() {
+    return await new Promise(resolve => {
+        setTimeout(() => {
+            document.getElementById('base-space').className = 'background-container fadeOut'
+
+            // start rendering the scene now that we need it!
+            needRender = true
+
+            document.getElementById('wormhole').className = 'fadeIn'
+            resolve()
+        }, 3000)
+    })
+}
+
+async function horizonAwakeningEvent() {
+    return await new Promise(resolve => {
+        setTimeout(() => {
+            const horizonGrowExposureCallToAction = new TWEEN.Tween(
+                effectPass.effects[1].godRaysMaterial.uniforms.exposure
+            ).to({ value: 4 }, 3000).easing(TWEEN.Easing.Cubic.In)
+
+            const horizonReduceExposureCallToAction = new TWEEN.Tween(
+                effectPass.effects[1].godRaysMaterial.uniforms.exposure
+            ).to({ value: 0.8 }, 3000).easing(TWEEN.Easing.Cubic.Out)
+
+            horizonGrowExposureCallToAction.start().chain(horizonReduceExposureCallToAction)
+            resolve()
+        }, 24000)
+    })
+}
+
+async function revealCallToActionEvent() {
+    return await new Promise(resolve => {
+        setTimeout(() => {
+            document.getElementById("callToAction").style.display = "block"
+            resolve()
+        }, 3000)
+    })
+}
+
+/**
+ * Entrypoint of the second phase
+ * Will be trigger by the click on the wormhole
+ * 
+ * @param {Object} event event of the click
+ */
 function prepareLaunchHorizonEvent(event) {
     event.preventDefault()
 
     document.getElementById('callToAction').className = 'fadeOut'
 
-    somnium.fade(1, 0, 1500)
-    oceans.volume(0)
-    oceans.play()
-    oceans.fade(0, 1, 5000)
+    somniumAudio.fade(1, 0, 1500)
+    oceansAudio.volume(0)
+    oceansAudio.play()
+    oceansAudio.fade(0, 1, 5000)
 
     const timeToLaunch = 12500
     const easingHideAndSpeed = TWEEN.Easing.Quintic.In
@@ -155,15 +162,15 @@ function prepareLaunchHorizonEvent(event) {
         .to({ value: 0 }, timeToLaunch)
         .easing(TWEEN.Easing.Elastic.Out)
 
-    const hideDark = new TWEEN.Tween(material)
+    const hideDark = new TWEEN.Tween(darkCylinderMaterial)
         .to({ opacity: 0.1 }, timeToLaunch)
         .easing(easingHideAndSpeed)
 
-    const hideColourFull = new TWEEN.Tween(secondMaterial)
+    const hideColourFull = new TWEEN.Tween(colorFullCylinderMaterial)
         .to({ opacity: 0 }, timeToLaunch)
         .easing(easingHideAndSpeed)
 
-    const hideWater = new TWEEN.Tween(thirdMaterial)
+    const hideWater = new TWEEN.Tween(waterCylinderMaterial)
         .to({ opacity: 0 }, timeToLaunch)
         .easing(easingHideAndSpeed)
 
@@ -199,6 +206,7 @@ function prepareLaunchHorizonEvent(event) {
 
 function launchHorizonEvent() {
     textureRotationDark.value = 0.0040
+
     const speedUpDark = new TWEEN.Tween(moveForwardDark)
         .to({ value: 0.0076 }, 2000)
         .easing(TWEEN.Easing.Elastic.Out)
@@ -215,20 +223,20 @@ function launchHorizonEvent() {
     speedUpDark.start()
     speedUpWater.start()
 
-    // launch long exposure from horizon
-    horizonExposure.start().onComplete(() => enterParalelUniverse())
-
     // launch first event at the same time
     firstPhaseEvent()
+
+    // launch long exposure from horizon
+    // because of the huge timeout this will be trigger after all the phase event
+    horizonExposure.start().onComplete(() => enterParalelUniverse())
 }
 
-// first phase is dark + Water high speed
 function firstPhaseEvent() {
-    const showDark = new TWEEN.Tween(material)
+    const showDark = new TWEEN.Tween(darkCylinderMaterial)
         .to({ opacity: 1 }, 500)
         .easing(TWEEN.Easing.Circular.Out)
 
-    const showWater = new TWEEN.Tween(thirdMaterial)
+    const showWater = new TWEEN.Tween(waterCylinderMaterial)
         .to({ opacity: 0.3 }, 500)
         .easing(TWEEN.Easing.Circular.Out)
 
@@ -239,7 +247,7 @@ function firstPhaseEvent() {
 async function secondPhaseEvent() {
     await new Promise(resolve => setTimeout(resolve, 6000))
 
-    const hideDark = new TWEEN.Tween(material)
+    const hideDark = new TWEEN.Tween(darkCylinderMaterial)
         .to({ opacity: 0 }, 3000)
         .easing(TWEEN.Easing.Circular.Out)
 
@@ -247,11 +255,11 @@ async function secondPhaseEvent() {
 }
 
 async function thirdPhaseEvent() {
-    const hideWater = new TWEEN.Tween(secondMaterial)
+    const hideWater = new TWEEN.Tween(colorFullCylinderMaterial)
         .to({ opacity: 0 }, 2000)
         .easing(TWEEN.Easing.Circular.Out)
 
-    const showLight = new TWEEN.Tween(lightMaterial)
+    const showLight = new TWEEN.Tween(lightCylinderMaterial)
         .to({ opacity: 1 }, 3000)
         .easing(TWEEN.Easing.Sinusoidal.In)
 
@@ -264,18 +272,8 @@ async function thirdPhaseEvent() {
     showLight.start()
 }
 
-async function fourthPhaseEvent() {
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    const speedUpRotation = new TWEEN.Tween(globalRotation)
-        .to({ value: 0.060 }, 3000)
-        .easing(TWEEN.Easing.Sinusoidal.In)
-
-    speedUpRotation.start()
-}
-
 async function enterParalelUniverse() {
-    scene.remove(thirdCylinder)
+    scene.remove(waterCylinderMaterial)
     scene.remove(lightCylinder)
     scene.remove(light)
 
@@ -288,8 +286,8 @@ async function enterParalelUniverse() {
 
     await new Promise(resolve => setTimeout(resolve, 9000))
 
-    scene.remove(sun)
-    sunMaterial.opacity = 0
+    scene.remove(horizon)
+    horizonMaterial.opacity = 0
     document.getElementById('wormhole').className = 'fadeIn'
 
     await fadeInWaitThenFadeOut('fourthStory', 8000)
@@ -303,11 +301,11 @@ async function showTeasingParalelUniverse() {
     moveForwardDark.value = 0.0006
     moveForwardColourFull.value = 0.0016
 
-    const showDark = new TWEEN.Tween(material)
+    const showDark = new TWEEN.Tween(darkCylinderMaterial)
         .to({ opacity: 1 }, 10000)
         .easing(TWEEN.Easing.Quadratic.In)
 
-    const showColorFull = new TWEEN.Tween(secondMaterial)
+    const showColorFull = new TWEEN.Tween(colorFullCylinderMaterial)
         .to({ opacity: 1 }, 10000)
         .easing(TWEEN.Easing.Quadratic.In)
 
@@ -325,112 +323,88 @@ async function showCredits() {
     })
 }
 
+// THREE.js part
 const scene = new THREE.Scene()
+window.scene = scene
+
+const renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", stencil: false, depth: false, alpha: true })
+renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.domElement.id = 'wormhole'
+renderer.domElement.className = 'fadeOut' //TO CHANGE -comment
+document.body.appendChild(renderer.domElement)
+
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-const renderer = new THREE.WebGLRenderer({
-    powerPreference: "high-performance",
-    antialias: false,
-    stencil: false,
-    depth: false,
-    alpha: true
-})
-
-let cylinderRadiusTop = 1
-let cylinderRadiusBottom = 1
-let cylinderHeight = 20
-let cylinderRadiusSegments = 32
-let cylinderHeightSegments = 3
-let cylinderOpenEnded = true
-
-const texture = new THREE.TextureLoader().load('/images/dark.jpg')
-texture.wrapS = THREE.RepeatWrapping
-texture.wrapT = THREE.RepeatWrapping
-texture.repeat.set(1, 1)
-const geometry = new THREE.CylinderBufferGeometry(
-    cylinderRadiusTop,
-    cylinderRadiusBottom,
-    cylinderHeight,
-    cylinderRadiusSegments,
-    cylinderHeightSegments,
-    cylinderOpenEnded
-)
-
-const material = new THREE.MeshPhongMaterial({
-    transparent: true,
-    needsUpdate: true,
-    side: THREE.DoubleSide,
-    map: texture,
-    blending: THREE.AdditiveBlending,
-    opacity: opacityDark.value
-})
-const cylinder = new THREE.Mesh(geometry, material)
-
-// second cylinder
-const secondTexture = new THREE.TextureLoader().load('/images/colorfull.jpg')
-secondTexture.wrapS = THREE.RepeatWrapping
-secondTexture.wrapT = THREE.MirroredRepeatWrapping
-secondTexture.repeat.set(1, 1)
-
-const secondMaterial = new THREE.MeshPhongMaterial({
-    transparent: true,
-    needsUpdate: true,
-    side: THREE.DoubleSide,
-    map: secondTexture,
-    blending: THREE.AdditiveBlending,
-    opacity: opacityColorFull.value
-})
-const secondCylinder = new THREE.Mesh(geometry, secondMaterial)
-
-// third cylinder
-const thirdTexture = new THREE.TextureLoader().load('/images/water.jpg')
-thirdTexture.wrapS = THREE.RepeatWrapping
-thirdTexture.wrapT = THREE.MirroredRepeatWrapping
-thirdTexture.repeat.set(1, 1)
-
-const thirdMaterial = new THREE.MeshPhongMaterial({
-    transparent: true,
-    needsUpdate: true,
-    side: THREE.DoubleSide,
-    map: thirdTexture,
-    blending: THREE.AdditiveBlending,
-    opacity: opacityWater.value
-})
-
-const thirdCylinder = new THREE.Mesh(geometry, thirdMaterial)
-
-// light cylinder
-const lightTexture = new THREE.TextureLoader().load('/images/light.jpg')
-lightTexture.wrapS = THREE.RepeatWrapping
-lightTexture.wrapT = THREE.MirroredRepeatWrapping
-lightTexture.repeat.set(1, 1)
-
-const lightMaterial = new THREE.MeshPhongMaterial({
-    transparent: true,
-    needsUpdate: true,
-    side: THREE.DoubleSide,
-    map: lightTexture,
-    blending: THREE.AdditiveBlending,
-    opacity: opacityLight.value
-})
-const lightCylinder = new THREE.Mesh(geometry, lightMaterial)
-
-scene.add(cylinder)
-scene.add(secondCylinder)
-scene.add(thirdCylinder)
-scene.add(lightCylinder)
-
 camera.position.x = 0
 camera.position.y = 10
 camera.position.z = 0
 camera.lookAt(0, 0, 0)
 
-renderer.setSize(window.innerWidth, window.innerHeight)
+const commonCylinderGeometry = new THREE.CylinderBufferGeometry(1, 1, 20, 32, 3, true)
 
-renderer.domElement.id = 'wormhole'
-    //TO CHANGE -comment
-renderer.domElement.className = 'fadeOut'
-document.body.appendChild(renderer.domElement)
+// dark space full of stars cylinder
+const darkCylinderTexture = new THREE.TextureLoader().load('/images/dark.jpg')
+darkCylinderTexture.wrapS = THREE.RepeatWrapping
+darkCylinderTexture.wrapT = THREE.RepeatWrapping
+darkCylinderTexture.repeat.set(1, 1)
+const darkCylinderMaterial = new THREE.MeshPhongMaterial({
+    transparent: true,
+    needsUpdate: true,
+    side: THREE.DoubleSide,
+    map: darkCylinderTexture,
+    blending: THREE.AdditiveBlending,
+    opacity: opacityDark.value
+})
+const darkCylinder = new THREE.Mesh(commonCylinderGeometry, darkCylinderMaterial)
 
+// colourfull space full of nebulas cylinder
+const colorFullCylinderTexture = new THREE.TextureLoader().load('/images/colorfull.jpg')
+colorFullCylinderTexture.wrapS = THREE.RepeatWrapping
+colorFullCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
+colorFullCylinderTexture.repeat.set(1, 1)
+const colorFullCylinderMaterial = new THREE.MeshPhongMaterial({
+    transparent: true,
+    needsUpdate: true,
+    side: THREE.DoubleSide,
+    map: colorFullCylinderTexture,
+    blending: THREE.AdditiveBlending,
+    opacity: opacityColorFull.value
+})
+const colorFullCylinder = new THREE.Mesh(commonCylinderGeometry, colorFullCylinderMaterial)
+
+// water cylinder
+const waterCylinderTexture = new THREE.TextureLoader().load('/images/water.jpg')
+waterCylinderTexture.wrapS = THREE.RepeatWrapping
+waterCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
+waterCylinderTexture.repeat.set(1, 1)
+const waterCylinderMaterial = new THREE.MeshPhongMaterial({
+    transparent: true,
+    needsUpdate: true,
+    side: THREE.DoubleSide,
+    map: waterCylinderTexture,
+    blending: THREE.AdditiveBlending,
+    opacity: opacityWater.value
+})
+const waterCylinder = new THREE.Mesh(commonCylinderGeometry, waterCylinderMaterial)
+
+// light cylinder
+const lightCylinderTexture = new THREE.TextureLoader().load('/images/light.jpg')
+lightCylinderTexture.wrapS = THREE.RepeatWrapping
+lightCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
+lightCylinderTexture.repeat.set(1, 1)
+const lightCylinderMaterial = new THREE.MeshPhongMaterial({
+    transparent: true,
+    needsUpdate: true,
+    side: THREE.DoubleSide,
+    map: lightCylinderTexture,
+    blending: THREE.AdditiveBlending,
+    opacity: opacityLight.value
+})
+const lightCylinder = new THREE.Mesh(commonCylinderGeometry, lightCylinderMaterial)
+
+scene.add(darkCylinder)
+scene.add(colorFullCylinder)
+scene.add(waterCylinder)
+scene.add(lightCylinder)
 const light = new THREE.AmbientLight(0xFFFFFF, 1)
 scene.add(light)
 
@@ -440,22 +414,16 @@ window.addEventListener('resize', () => {
     camera.updateProjectMatrix()
 })
 
-// horizon
-const sunMaterial = new THREE.MeshBasicMaterial({
-    transparent: true,
-    fog: true,
-    opacity: 1
-});
+// handling horizon => this will be highly animated by godrays effect at post processing
+const horizonMaterial = new THREE.MeshBasicMaterial({ transparent: true, fog: true, opacity: 1 })
+const horizonGeometry = new THREE.SphereBufferGeometry(0.25, 32, 32)
+const horizon = new THREE.Mesh(horizonGeometry, horizonMaterial)
+horizon.frustumCulled = false
+horizon.matrixAutoUpdate = false
+scene.add(horizon)
 
-
-const sunGeometry = new THREE.SphereBufferGeometry(0.25, 32, 32);
-const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-sun.frustumCulled = false;
-sun.matrixAutoUpdate = false;
-scene.add(sun)
-
-document.getElementById('callToAction').addEventListener('click', event => prepareLaunchHorizonEvent(event))
-
+// handling post processing process
+// godrays, depth and bloom effects are added to the renderer
 const godRaysEffectOptions = {
     height: 480,
     blendFunction: POSTPROCESSING.BlendFunction.ADD,
@@ -468,64 +436,42 @@ const godRaysEffectOptions = {
     samples: 60,
     clampMax: 1.0
 }
+const godRaysEffect = new POSTPROCESSING.GodRaysEffect(camera, horizon, godRaysEffectOptions)
+const depthEffect = new POSTPROCESSING.RealisticBokehEffect({ blendFunction: POSTPROCESSING.BlendFunction.ADD, focus: 2, maxBlur: 5, focalLength: 24 })
+const bloomEffect = new POSTPROCESSING.BloomEffect({ blendFunction: POSTPROCESSING.BlendFunction.ADD, kernelSize: POSTPROCESSING.KernelSize.SMALL })
+bloomEffect.blendMode.opacity.value = 4
 
-const godRaysEffect = new POSTPROCESSING.GodRaysEffect(camera, sun, godRaysEffectOptions);
+// using a global variable because effects will be highly animated during the experience
+effectPass = new POSTPROCESSING.EffectPass(camera, bloomEffect, depthEffect, godRaysEffect)
+effectPass.renderToScreen = true
 
-
-const depthEffect = new POSTPROCESSING.RealisticBokehEffect({
-    blendFunction: POSTPROCESSING.BlendFunction.ADD,
-    focus: 2,
-    maxBlur: 5,
-    focalLength: 24
-})
-
-const bloomEffect = new POSTPROCESSING.BloomEffect({
-    blendFunction: POSTPROCESSING.BlendFunction.ADD,
-    kernelSize: POSTPROCESSING.KernelSize.SMALL
-});
-
-// tweak this for the bloom effect
-bloomEffect.blendMode.opacity.value = 4;
-
-// postprocessing effect pass instance
-effectPass = new POSTPROCESSING.EffectPass(
-    camera,
-    bloomEffect,
-    depthEffect,
-    godRaysEffect
-);
-
-// enable effect pass
-effectPass.renderToScreen = true;
-const composer = new POSTPROCESSING.EffectComposer(renderer);
-// postprocessing mandatory first render pass
-composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
-// postprocessing effect render pass
-composer.addPass(effectPass);
+const composer = new POSTPROCESSING.EffectComposer(renderer)
+composer.addPass(new POSTPROCESSING.RenderPass(scene, camera))
+composer.addPass(effectPass)
 
 function animate(time) {
     if (needRender) {
         TWEEN.update(time)
 
-        cylinder.rotation.y += globalRotation.value
-        texture.offset.y -= moveForwardDark.value
-        texture.offset.x -= textureRotationDark.value
+        darkCylinder.rotation.y += globalRotation.value
+        darkCylinderTexture.offset.y -= moveForwardDark.value
+        darkCylinderTexture.offset.x -= textureRotationDark.value
 
-        secondCylinder.rotation.y += globalRotation.value
-        secondTexture.offset.y -= moveForwardColourFull.value
-        secondTexture.offset.x -= textureRotationColourFull.value
+        colorFullCylinder.rotation.y += globalRotation.value
+        colorFullCylinderTexture.offset.y -= moveForwardColourFull.value
+        colorFullCylinderTexture.offset.x -= textureRotationColourFull.value
 
-        thirdCylinder.rotation.y += globalRotation.value
-        thirdTexture.offset.y -= moveForwardWater.value
-        thirdTexture.offset.x -= textureRotationWater.value
+        waterCylinder.rotation.y += globalRotation.value
+        waterCylinderTexture.offset.y -= moveForwardWater.value
+        waterCylinderTexture.offset.x -= textureRotationWater.value
 
         lightCylinder.rotation.y += globalRotation.value
-        lightTexture.offset.y -= moveForwardLight.value
-        lightTexture.offset.x -= textureRotationLight.value
+        lightCylinderTexture.offset.y -= moveForwardLight.value
+        lightCylinderTexture.offset.x -= textureRotationLight.value
 
         composer.render()
     }
     requestAnimationFrame(animate)
 }
-window.scene = scene
+
 animate()

@@ -46,9 +46,9 @@ see her work: https://anastasiagoodwin.com/
     left: 0;
     bottom: 0;
     right: 0;
-    -webkit-transition: opacity 8s;
-    -moz-transition: opacity 8s;
-    transition: opacity 8s;
+    -webkit-transition: opacity 2s;
+    -moz-transition: opacity 2s;
+    transition: opacity 2s;
 }
 
 .stars {
@@ -114,6 +114,12 @@ canvas {
     -webkit-transition: opacity 5s;
     -moz-transition: opacity 5s;
     transition: opacity 5s;
+}
+
+#launch {
+    -webkit-transition: opacity 2s;
+    -moz-transition: opacity 2s;
+    transition: opacity 2s;
 }
 
 #outro {

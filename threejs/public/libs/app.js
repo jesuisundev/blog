@@ -255,12 +255,12 @@ async function secondPhaseEvent() {
 }
 
 async function thirdPhaseEvent() {
-    const hideWater = new TWEEN.Tween(colorFullCylinderMaterial)
+    const hideColourFull = new TWEEN.Tween(colorFullCylinderMaterial)
         .to({ opacity: 0 }, 2000)
         .easing(TWEEN.Easing.Circular.Out)
 
     const showLight = new TWEEN.Tween(lightCylinderMaterial)
-        .to({ opacity: 1 }, 3000)
+        .to({ opacity: 0.6 }, 3000)
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     const speedUpRotation = new TWEEN.Tween(globalRotation)
@@ -268,12 +268,12 @@ async function thirdPhaseEvent() {
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     speedUpRotation.start()
-    hideWater.start()
+    hideColourFull.start()
     showLight.start()
 }
 
 async function enterParalelUniverse() {
-    scene.remove(waterCylinderMaterial)
+    scene.remove(waterCylinder)
     scene.remove(lightCylinder)
     scene.remove(light)
 
@@ -296,10 +296,10 @@ async function enterParalelUniverse() {
 
 async function showTeasingParalelUniverse() {
     globalRotation.value = 0.001
-    textureRotationDark.value = 0.0006
-    textureRotationColourFull.value = 0.0006
-    moveForwardDark.value = 0.0006
-    moveForwardColourFull.value = 0.0016
+    textureRotationDark.value = -0.0004
+    textureRotationColourFull.value = -0.0004
+    moveForwardDark.value = 0.0004
+    moveForwardColourFull.value = 0.0014
 
     const showDark = new TWEEN.Tween(darkCylinderMaterial)
         .to({ opacity: 1 }, 10000)

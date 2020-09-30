@@ -24,7 +24,7 @@ const parallelTextureRotation = { value: 0.0006 }
 const parallelMoveForward = { value: 0.0016 }
 const parallelOpacity = { value: 0 }
 
-document.getElementById('launch').addEventListener('click', async event => launchExperience(event))
+document.getElementById('launch').addEventListener('click', event => launchExperience(event))
 document.getElementById('callToAction').addEventListener('click', event => prepareLaunchHorizonEvent(event))
 
 init()
@@ -370,8 +370,9 @@ async function showCredits() {
 const scene = new THREE.Scene()
 window.scene = scene
 
-const renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", stencil: false, depth: false, alpha: true })
+const renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", depth: false, alpha: true })
 renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.setClearColor(0xffffff, 0)
 renderer.domElement.id = 'wormhole'
 renderer.domElement.className = 'fadeOut' //TO CHANGE -comment
 document.body.appendChild(renderer.domElement)

@@ -81,7 +81,7 @@ see her work: https://anastasiagoodwin.com/
 
 
 /**
-Main CSS Wormhole JS
+Main CSS Across the universe
 **/
 
 body {
@@ -116,6 +116,12 @@ canvas {
     transition: opacity 5s;
 }
 
+#intro {
+    -webkit-transition: opacity 3s;
+    -moz-transition: opacity 3s;
+    transition: opacity 3s;
+}
+
 #launch {
     -webkit-transition: opacity 2s;
     -moz-transition: opacity 2s;
@@ -145,11 +151,16 @@ canvas {
     z-index: 9999;
     position: fixed;
     top: 50%;
-    left: 38%;
+    left: 50%;
     transform: translate(-50%, -50%);
     color: white;
     text-align: center;
     white-space: nowrap;
+}
+
+#story p {
+    position: relative;
+    text-align: center;
 }
 
 #callToAction {
@@ -162,6 +173,10 @@ canvas {
     text-align: center;
     text-decoration: none;
     white-space: nowrap;
+    width: 80px;
+    height: 80px;
+    outline: none;
+    line-height: 80px;
     -webkit-transition: opacity 5s;
     -moz-transition: opacity 5s;
     transition: opacity 5s;

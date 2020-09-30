@@ -61,6 +61,8 @@ function initAudio() {
 async function launchExperience(event) {
     event.preventDefault()
 
+    document.getElementById('launch').style.visibility = 'hidden'
+
     document.getElementById('intro').className = 'fadeOut'
     setTimeout(() => document.getElementById('intro').remove(), 6000)
 
@@ -161,7 +163,7 @@ async function revealCallToActionEvent() {
 function prepareLaunchHorizonEvent(event) {
     event.preventDefault()
 
-    document.getElementById('callToAction').className = 'fadeOut'
+    document.getElementById('callToAction').remove()
 
     somniumAudio.fade(1, 0, 1500)
     oceansAudio.volume(0)
@@ -370,7 +372,6 @@ const renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", 
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.domElement.id = 'wormhole'
 renderer.domElement.className = 'fadeOut' //TO CHANGE -comment
-needRender = true
 document.body.appendChild(renderer.domElement)
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)

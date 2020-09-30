@@ -285,7 +285,7 @@ async function secondPhaseHorizonEvent() {
  */
 async function thirdPhaseHorizonEvent() {
     const showLight = new TWEEN.Tween(lightCylinderMaterial)
-        .to({ opacity: 0.6 }, 3000)
+        .to({ opacity: 0.5 }, 3000)
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     const speedUpRotation = new TWEEN.Tween(globalRotation)
@@ -306,6 +306,8 @@ async function enterParallelUniverse() {
     scene.remove(lightCylinder)
     scene.remove(light)
 
+    const lightLight = new THREE.AmbientLight(0xFFFFFF, 0.1)
+    scene.add(lightLight)
     const blueLight = new THREE.AmbientLight(0x000080, 1)
     scene.add(blueLight)
 

@@ -313,12 +313,23 @@ async function enterParallelUniverse() {
 
     await new Promise(resolve => setTimeout(resolve, 3000))
 
+    needRender = false
+
+    // TODO
+    // MAKE WHITE WALL VISIBLE TO INDEX 9999
+    // document.getElementById('wormhole').style.opacity = 0
+    // document.getElementById('wormhole').className = 'fadeOut'
+    // MAKE WHITE WALL fadeout
     document.getElementById('wormhole').className = 'fadeOut'
 
     await new Promise(resolve => setTimeout(resolve, 9000))
 
+    // DELETE WHITE WALL
+
     scene.remove(horizon)
     horizonMaterial.opacity = 0
+
+    needRender = true
     document.getElementById('wormhole').className = 'fadeIn'
 
     await fadeInWaitThenFadeOut('fourthStory', 8000)
@@ -383,14 +394,14 @@ camera.position.y = 10
 camera.position.z = 0
 camera.lookAt(0, 0, 0)
 
-const commonCylinderGeometry = new THREE.CylinderBufferGeometry(1, 1, 20, 32, 3, true)
+const commonCylinderGeometry = new THREE.CylinderBufferGeometry(1, 1, 20, 10, 0, true)
 
 // dark space full of stars - background cylinder
 const darkCylinderTexture = new THREE.TextureLoader().load('/images/dark.jpg')
 darkCylinderTexture.wrapS = THREE.RepeatWrapping
 darkCylinderTexture.wrapT = THREE.RepeatWrapping
 darkCylinderTexture.repeat.set(1, 1)
-const darkCylinderMaterial = new THREE.MeshPhongMaterial({
+const darkCylinderMaterial = new THREE.MeshLambertMaterial({
     transparent: true,
     needsUpdate: true,
     side: THREE.DoubleSide,
@@ -405,7 +416,7 @@ const colorFullCylinderTexture = new THREE.TextureLoader().load('/images/colorfu
 colorFullCylinderTexture.wrapS = THREE.RepeatWrapping
 colorFullCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
 colorFullCylinderTexture.repeat.set(1, 1)
-const colorFullCylinderMaterial = new THREE.MeshPhongMaterial({
+const colorFullCylinderMaterial = new THREE.MeshBasicMaterial({
     transparent: true,
     needsUpdate: true,
     side: THREE.DoubleSide,
@@ -420,7 +431,7 @@ const waterCylinderTexture = new THREE.TextureLoader().load('/images/water.jpg')
 waterCylinderTexture.wrapS = THREE.RepeatWrapping
 waterCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
 waterCylinderTexture.repeat.set(1, 1)
-const waterCylinderMaterial = new THREE.MeshPhongMaterial({
+const waterCylinderMaterial = new THREE.MeshBasicMaterial({
     transparent: true,
     needsUpdate: true,
     side: THREE.DoubleSide,
@@ -435,7 +446,7 @@ const lightCylinderTexture = new THREE.TextureLoader().load('/images/light.jpg')
 lightCylinderTexture.wrapS = THREE.RepeatWrapping
 lightCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
 lightCylinderTexture.repeat.set(1, 1)
-const lightCylinderMaterial = new THREE.MeshPhongMaterial({
+const lightCylinderMaterial = new THREE.MeshBasicMaterial({
     transparent: true,
     needsUpdate: true,
     side: THREE.DoubleSide,
@@ -450,7 +461,7 @@ const parallelCylinderTexture = new THREE.TextureLoader().load('/images/parallel
 parallelCylinderTexture.wrapS = THREE.RepeatWrapping
 parallelCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
 parallelCylinderTexture.repeat.set(1, 1)
-const parallelCylinderMaterial = new THREE.MeshPhongMaterial({
+const parallelCylinderMaterial = new THREE.MeshLambertMaterial({
     transparent: true,
     needsUpdate: true,
     side: THREE.DoubleSide,

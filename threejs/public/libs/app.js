@@ -302,29 +302,26 @@ async function thirdPhaseHorizonEvent() {
  * no cylinder
  */
 async function enterParallelUniverse() {
+    // workaround firefox bug on godrays fadeout
+    document.getElementById('whitewall').style.zIndex = "9999"
+    document.getElementById('whitewall').style.visibility = "visible"
+    document.getElementById('wormhole').className = 'fadeOut'
     scene.remove(waterCylinder)
     scene.remove(lightCylinder)
     scene.remove(light)
 
     const lightLight = new THREE.AmbientLight(0xFFFFFF, 0.1)
     scene.add(lightLight)
-    const blueLight = new THREE.AmbientLight(0x000080, 1)
+    const blueLight = new THREE.AmbientLight(0x000080, 0.5)
     scene.add(blueLight)
 
     await new Promise(resolve => setTimeout(resolve, 3000))
 
     needRender = false
 
-    // TODO
-    // MAKE WHITE WALL VISIBLE TO INDEX 9999
-    // document.getElementById('wormhole').style.opacity = 0
-    // document.getElementById('wormhole').className = 'fadeOut'
-    // MAKE WHITE WALL fadeout
-    document.getElementById('wormhole').className = 'fadeOut'
-
+    document.getElementById('whitewall').className = 'fadeOut'
     await new Promise(resolve => setTimeout(resolve, 9000))
-
-    // DELETE WHITE WALL
+    document.getElementById('whitewall').remove()
 
     scene.remove(horizon)
     horizonMaterial.opacity = 0

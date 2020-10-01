@@ -91,7 +91,7 @@ body {
 }
 
 canvas {
-    z-index: 9998;
+    z-index: 100;
     display: block;
     position: relative;
     -webkit-transition: opacity 10s;
@@ -100,13 +100,9 @@ canvas {
     transition: opacity 10s;
 }
 
-.dg.ac {
-    z-index: 9999 !important;
-}
-
 #intro,
 #outro {
-    z-index: 9999;
+    z-index: 101;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -133,10 +129,6 @@ canvas {
     transition: opacity 2s;
 }
 
-#outro {
-    z-index: 9998;
-}
-
 #outro ul {
     width: 280px;
     margin: auto;
@@ -153,7 +145,7 @@ canvas {
 }
 
 #story {
-    z-index: 9999;
+    z-index: 102;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -336,4 +328,19 @@ hr {
     100% {
         transform: rotateZ(360deg);
     }
+}
+
+#whitewall {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    visibility: hidden;
+    z-index: -1;
+    -webkit-transition: opacity 5s;
+    -moz-transition: opacity 5s;
+    -o-transition: opacity 5s;
+    transition: opacity 5s;
 }

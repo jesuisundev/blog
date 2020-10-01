@@ -208,6 +208,8 @@ canvas {
     transition: opacity 5s;
     position: fixed;
     top: 0;
+    font-family: Roboto;
+    font-size: 20px;
 }
 
 .fadeIn {

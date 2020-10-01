@@ -129,11 +129,11 @@ async function horizonAwakeningEvent() {
     return await new Promise(resolve => {
         setTimeout(() => {
             const horizonGrowExposureCallToAction = new TWEEN.Tween(
-                effectPass.effects[1].godRaysMaterial.uniforms.exposure
+                effectPass.effects[0].godRaysMaterial.uniforms.exposure
             ).to({ value: 4 }, 3000).easing(TWEEN.Easing.Cubic.In)
 
             const horizonReduceExposureCallToAction = new TWEEN.Tween(
-                effectPass.effects[1].godRaysMaterial.uniforms.exposure
+                effectPass.effects[0].godRaysMaterial.uniforms.exposure
             ).to({ value: 0.8 }, 3000).easing(TWEEN.Easing.Cubic.Out)
 
             horizonGrowExposureCallToAction.start().chain(horizonReduceExposureCallToAction)
@@ -187,7 +187,7 @@ function prepareLaunchHorizonEvent(event) {
         .easing(easingRotation)
 
     const reduceBloomEffect = new TWEEN.Tween(bloomEffect.blendMode.opacity)
-        .to({ value: 0 }, timeToLaunch)
+        .to({ value: 1 }, timeToLaunch)
         .easing(TWEEN.Easing.Elastic.Out)
 
     const reduceDark = new TWEEN.Tween(darkCylinderMaterial)
@@ -244,7 +244,7 @@ function launchHorizonEvent() {
         .to({ value: 0.0156 }, 2000)
         .easing(TWEEN.Easing.Elastic.Out)
 
-    const horizonExposure = new TWEEN.Tween(effectPass.effects[1].godRaysMaterial.uniforms.exposure)
+    const horizonExposure = new TWEEN.Tween(effectPass.effects[0].godRaysMaterial.uniforms.exposure)
         .to({ value: 45 }, 35000)
         .easing(TWEEN.Easing.Circular.In)
 
@@ -285,7 +285,7 @@ async function secondPhaseHorizonEvent() {
  */
 async function thirdPhaseHorizonEvent() {
     const showLight = new TWEEN.Tween(lightCylinderMaterial)
-        .to({ opacity: 0.5 }, 3000)
+        .to({ opacity: 1 }, 3000)
         .easing(TWEEN.Easing.Sinusoidal.In)
 
     const speedUpRotation = new TWEEN.Tween(globalRotation)
@@ -381,7 +381,7 @@ async function showCredits() {
 const scene = new THREE.Scene()
 window.scene = scene
 
-const renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", depth: false, alpha: true })
+const renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", antialias: false, stencil: false, depth: false })
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setClearColor(0xffffff, 0)
 renderer.domElement.id = 'wormhole'
@@ -493,7 +493,7 @@ horizon.matrixAutoUpdate = false
 scene.add(horizon)
 
 // handling post processing process
-// godrays, depth and bloom effects are added to the renderer
+// godrays and bloom effects are added to the renderer
 const godRaysEffectOptions = {
     height: 480,
     blendFunction: POSTPROCESSING.BlendFunction.ADD,
@@ -507,12 +507,11 @@ const godRaysEffectOptions = {
     clampMax: 1.0
 }
 const godRaysEffect = new POSTPROCESSING.GodRaysEffect(camera, horizon, godRaysEffectOptions)
-const depthEffect = new POSTPROCESSING.RealisticBokehEffect({ blendFunction: POSTPROCESSING.BlendFunction.ADD, focus: 2, maxBlur: 5, focalLength: 24 })
 const bloomEffect = new POSTPROCESSING.BloomEffect({ blendFunction: POSTPROCESSING.BlendFunction.ADD, kernelSize: POSTPROCESSING.KernelSize.SMALL })
 bloomEffect.blendMode.opacity.value = 4
 
 // using a global variable because effects will be highly animated during the experience
-effectPass = new POSTPROCESSING.EffectPass(camera, bloomEffect, depthEffect, godRaysEffect)
+effectPass = new POSTPROCESSING.EffectPass(camera, bloomEffect, godRaysEffect)
 effectPass.renderToScreen = true
 
 const composer = new POSTPROCESSING.EffectComposer(renderer)

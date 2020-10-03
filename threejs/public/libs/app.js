@@ -38,6 +38,11 @@ async function init() {
         document.getElementById('loading').remove()
         document.getElementById('launch').className = 'fadeIn'
     }
+
+    await showElementById("title")
+    await showElementById("description")
+    await showElementById("notice")
+    await showElementById("entrypoint")
 }
 
 /**
@@ -49,6 +54,21 @@ function initAudio() {
     })
     oceansAudio = new Howl({
         src: ['/audio/oceans.mp3']
+    })
+}
+
+/**
+ * show document element by seting the class fadeIn
+ * 
+ * @param {String} id id of the element in the document
+ * @param {Number} fadeInTime time in millisecond before fadein
+ */
+async function showElementById(id, fadeInTime = 1000) {
+    return await new Promise(resolve => {
+        setTimeout(() => {
+            document.getElementById(id).className = 'fadeIn'
+            resolve()
+        }, fadeInTime)
     })
 }
 

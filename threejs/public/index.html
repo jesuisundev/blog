@@ -22,13 +22,13 @@
     <meta property="og:description" content="A three minute web experience across the universe.">
     <meta property="og:url" content="https://www.across-universe.com/">
     <meta property="og:site_name" content="Across The Universe">
-    <meta property="og:image" content="https://s3.eu-west-3.amazonaws.com/www.across-universe.com/misc/logo.JPG">
+    <meta property="og:image" content="https://s3.eu-west-3.amazonaws.com/www.across-universe.com/misc/preview.JPG">
     <meta property="og:image:width" content="801">
     <meta property="og:image:height" content="408">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Across The Universe">
     <meta name="twitter:description" content="A three minute web experience across the universe.">
-    <meta name="twitter:image" content="https://s3.eu-west-3.amazonaws.com/www.across-universe.com/misc/logo.JPG">
+    <meta name="twitter:image" content="https://s3.eu-west-3.amazonaws.com/www.across-universe.com/misc/preview.JPG">
     <meta name="twitter:creator" content="@jesuisundev">
     <meta name="author" content="Mehdi ZOGHLAMI">
 
@@ -44,32 +44,35 @@
 
 <body id="global">
     <div id="intro">
-        <div class="title">
-            <img id="logo" src="images/logo.svg" alt="Across the universe" />
+        <div id="title" class="fadeOut">
             <h1 style="display: none;">Across the universe</h1>
+            <img id="logo" src="images/logo.svg" alt="Across the universe" />
+        </div>
+        <div id="description" class="fadeOut">
             <hr />
             <h2>A three minute web experience across the universe</h2>
-        </div>
-        <p class="description">
             This experience uses only Javascript, HTML and CSS rendered in real time.
             <br />Press <strong>F11</strong> to go fullscreen for a better experience.
-        </p>
-        <div id="sound">
-            <div class="dashed-circle">
-                <div class="circle">
-                    <img id="headphone" src="images/headphone.svg" alt="headphone" />
+        </div>
+        <div id="notice" class="fadeOut">
+            <div id="sound">
+                <div class="dashed-circle">
+                    <div class="circle">
+                        <img id="headphone" src="images/headphone.svg" alt="headphone" />
+                    </div>
                 </div>
             </div>
-
+            <p id="turnup">
+                <strong>Turn up sound</strong> <br />before launch
+            </p>
         </div>
-        <p id="turnup">
-            <strong>Turn up sound</strong> <br />before launch
-        </p>
-        <img id="loading" src="https://i.stack.imgur.com/qq8AE.gif" width="32" />
-        <br />
-        <a id="launch" href="" class="fadeOut">
-            LAUNCH EXPERIENCE
-        </a>
+        <div id="entrypoint" class="fadeOut">
+            <img id="loading" src="https://i.stack.imgur.com/qq8AE.gif" width="32" />
+            <br />
+            <a id="launch" href="" class="fadeOut">
+                LAUNCH EXPERIENCE
+            </a>
+        </div>
     </div>
 
     <div id="story">
@@ -101,8 +104,8 @@
             <h1>End of chapter 1</h1>
             <p>Explore parallel universe in chapter 2 very soon !</p>
         </div>
-        <p class="description">
-            <h2>
+        <div class="description">
+            <h2 class="blink_cta">
                 Share experience
             </h2>
             <ul class="bwp-single-post-share-list list-unstyled">
@@ -137,7 +140,7 @@
                     </a>
                 </li>
             </ul>
-        </p>
+        </div>
         <br style="clear: both;" />
         <br />
         <h3>

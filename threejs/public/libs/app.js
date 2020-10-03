@@ -104,6 +104,28 @@ async function fadeInWaitThenFadeOut(currentIdStory, fadeOutTime = 1000) {
 }
 
 /**
+ * Globally hide the cursor after 2s of inactivity
+ */
+function hideCursorOnInactivity() {
+    let fadeInBuffer, timer
+    document.getElementById('global').addEventListener('mousemove', () => {
+        if (!fadeInBuffer && timer) {
+            clearTimeout(timer)
+            timer = 0
+            document.getElementById('global').style.cursor = ''
+        } else {
+            document.getElementById('global').style.cursor = 'default'
+            fadeInBuffer = false;
+        }
+
+        timer = setTimeout(() => {
+            document.getElementById('global').style.cursor = 'none'
+            fadeInBuffer = true;
+        }, 2000)
+    });
+}
+
+/**
  * Hide the space background and reveal the wormhole
  * The rendering of the scene start here!
  */
@@ -367,6 +389,7 @@ async function showTeasingParalelUniverse() {
 async function showCredits() {
     await new Promise(resolve => {
         setTimeout(() => {
+            document.getElementById('outro').style.visibility = "visible"
             document.getElementById('outro').style.zIndex = "9999"
             document.getElementById('outro').className = 'fadeIn'
             resolve()
@@ -382,8 +405,10 @@ const renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", 
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setClearColor(0xffffff, 0)
 renderer.domElement.id = 'wormhole'
-renderer.domElement.className = 'fadeOut' //TO CHANGE -comment
+renderer.domElement.className = 'fadeOut'
+
 document.body.appendChild(renderer.domElement)
+try { hideCursorOnInactivity() } catch (error) { console.error(error) }
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 camera.position.x = 0
@@ -391,17 +416,15 @@ camera.position.y = 10
 camera.position.z = 0
 camera.lookAt(0, 0, 0)
 
-const commonCylinderGeometry = new THREE.CylinderBufferGeometry(1, 1, 20, 10, 0, true)
+const commonCylinderGeometry = new THREE.CylinderBufferGeometry(1, 1, 20, 12, 0, true)
 
 // dark space full of stars - background cylinder
 const darkCylinderTexture = new THREE.TextureLoader().load('/images/dark.jpg')
 darkCylinderTexture.wrapS = THREE.RepeatWrapping
-darkCylinderTexture.wrapT = THREE.RepeatWrapping
+darkCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
 darkCylinderTexture.repeat.set(1, 1)
 const darkCylinderMaterial = new THREE.MeshLambertMaterial({
-    transparent: true,
-    needsUpdate: true,
-    side: THREE.DoubleSide,
+    side: THREE.BackSide,
     map: darkCylinderTexture,
     blending: THREE.AdditiveBlending,
     opacity: darkOpacity.value
@@ -414,9 +437,7 @@ colorFullCylinderTexture.wrapS = THREE.RepeatWrapping
 colorFullCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
 colorFullCylinderTexture.repeat.set(1, 1)
 const colorFullCylinderMaterial = new THREE.MeshBasicMaterial({
-    transparent: true,
-    needsUpdate: true,
-    side: THREE.DoubleSide,
+    side: THREE.BackSide,
     map: colorFullCylinderTexture,
     blending: THREE.AdditiveBlending,
     opacity: colorFullOpacity.value
@@ -429,9 +450,7 @@ waterCylinderTexture.wrapS = THREE.RepeatWrapping
 waterCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
 waterCylinderTexture.repeat.set(1, 1)
 const waterCylinderMaterial = new THREE.MeshBasicMaterial({
-    transparent: true,
-    needsUpdate: true,
-    side: THREE.DoubleSide,
+    side: THREE.BackSide,
     map: waterCylinderTexture,
     blending: THREE.AdditiveBlending,
     opacity: waterOpacity.value
@@ -444,9 +463,7 @@ lightCylinderTexture.wrapS = THREE.RepeatWrapping
 lightCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
 lightCylinderTexture.repeat.set(1, 1)
 const lightCylinderMaterial = new THREE.MeshBasicMaterial({
-    transparent: true,
-    needsUpdate: true,
-    side: THREE.DoubleSide,
+    side: THREE.BackSide,
     map: lightCylinderTexture,
     blending: THREE.AdditiveBlending,
     opacity: lightOpacity.value
@@ -459,9 +476,7 @@ parallelCylinderTexture.wrapS = THREE.RepeatWrapping
 parallelCylinderTexture.wrapT = THREE.MirroredRepeatWrapping
 parallelCylinderTexture.repeat.set(1, 1)
 const parallelCylinderMaterial = new THREE.MeshLambertMaterial({
-    transparent: true,
-    needsUpdate: true,
-    side: THREE.DoubleSide,
+    side: THREE.BackSide,
     map: parallelCylinderTexture,
     blending: THREE.AdditiveBlending,
     opacity: parallelOpacity.value
@@ -482,7 +497,7 @@ window.addEventListener('resize', () => {
 })
 
 // handling horizon => this will be highly animated by godrays effect at post processing
-const horizonMaterial = new THREE.MeshBasicMaterial({ transparent: true, fog: true, opacity: 1 })
+const horizonMaterial = new THREE.MeshBasicMaterial({ opacity: 1 })
 const horizonGeometry = new THREE.SphereBufferGeometry(0.25, 32, 32)
 const horizon = new THREE.Mesh(horizonGeometry, horizonMaterial)
 horizon.frustumCulled = false

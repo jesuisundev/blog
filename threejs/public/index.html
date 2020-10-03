@@ -17,7 +17,6 @@
     <meta charset="utf-8">
     <title>Across The Universe - A three minute web experience across the universe</title>
 
-    <meta name="author" content="Mehdi ZOGHLAMI">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Across The Universe">
     <meta property="og:description" content="A three minute web experience across the universe.">
@@ -31,6 +30,7 @@
     <meta name="twitter:description" content="A three minute web experience across the universe.">
     <meta name="twitter:image" content="https://s3.eu-west-3.amazonaws.com/www.across-universe.com/misc/logo.JPG">
     <meta name="twitter:creator" content="@jesuisundev">
+    <meta name="author" content="Mehdi ZOGHLAMI">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
@@ -42,7 +42,7 @@
     <script type="module" src="libs/app.js"></script>
 </head>
 
-<body>
+<body id="global">
     <div id="intro">
         <div class="title">
             <img id="logo" src="images/logo.svg" alt="Across the universe" />
@@ -52,6 +52,7 @@
         </div>
         <p class="description">
             This experience uses only Javascript, HTML and CSS rendered in real time.
+            <br />Press <strong>F11</strong> to go fullscreen for a better experience.
         </p>
         <div id="sound">
             <div class="dashed-circle">
@@ -87,7 +88,7 @@
     </div>
 
     <a id="callToAction" class="blink_cta" href="">
-        Click
+        CLICK
     </a>
 
     <div id="base-space" class="background-container">

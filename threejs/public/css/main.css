@@ -136,19 +136,49 @@ canvas {
 }
 
 #outro ul {
-    width: 410px;
+    width: 368px;
     margin: auto;
 }
 
 #outro li {
     float: left;
-    padding: 0 15px;
+    padding: 0 5px;
     list-style-type: none;
+}
+
+#outro h1 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 44px;
 }
 
 #outro h2 {
     margin-bottom: 15px;
+    margin-top: 5px;
+    font-weight: lighter;
+    font-size: 24px;
+}
+
+#outro div.description {
     margin-top: 35px;
+}
+
+#outro h3 {
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+#outro h4 {
+    margin: 0;
+}
+
+#outro h4 a {
+    color: white;
+    font-weight: normal;
+}
+
+#outro h4 a:hover {
+    text-decoration: none;
 }
 
 #story {
@@ -407,12 +437,12 @@ hr {
 
 .bwp-single-post-share-list li a {
     display: inline-block;
-    width: 36px;
-    height: 36px;
-    line-height: 36px;
+    width: 49px;
+    height: 49px;
+    line-height: 49px;
     text-align: center;
     font-family: sans-serif;
-    font-size: 13px;
+    font-size: 20px;
     font-weight: 400;
     color: #fff;
     border-radius: 50%;

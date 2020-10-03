@@ -24,11 +24,11 @@
     <meta property="og:description" content="A three minute web experience across the universe.">
     <meta property="og:url" content="https://www.across-universe.com/">
     <meta property="og:site_name" content="Across The Universe">
-    <meta property="og:image" content="https://s3.eu-west-3.amazonaws.com/www.across-universe.com/misc/preview.JPG">
+    <meta property="og:image" content="https://s3.eu-west-3.amazonaws.com/www.across-universe.com/misc/preview.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Across The Universe">
     <meta name="twitter:description" content="A three minute web experience across the universe.">
-    <meta name="twitter:image" content="https://s3.eu-west-3.amazonaws.com/www.across-universe.com/misc/preview.JPG">
+    <meta name="twitter:image" content="https://s3.eu-west-3.amazonaws.com/www.across-universe.com/misc/preview.jpg">
     <meta name="twitter:creator" content="@jesuisundev">
     <meta name="author" content="Mehdi ZOGHLAMI">
 
@@ -41,6 +41,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.0/howler.min.js" integrity="sha512-ALoawPS0JxHQ+8dGL7htZIlVNRaE/SN9gHD4G8pJJTi9H4BQ/3PjdvhggSGR34g00mvTPFkxQuveQUsJA5664Q==" crossorigin="anonymous"></script>
     <script src="libs/postprocessing.min.js"></script>
     <script type="module" src="libs/app.js"></script>
+    <script>
+        if (window.location.href == "https://s3.eu-west-3.amazonaws.com/www.across-universe.com/index.html") {
+            window.location.href = 'https://www.across-universe.com/'
+        }
+    </script>
 </head>
 
 <body id="global">
@@ -101,17 +106,20 @@
     </div>
 
     <div id="outro" class="fadeOut">
+        <img id="logo" src="images/logo.svg" alt="Across the universe" />
+        <hr />
         <div class="title">
             <h1>End of chapter 1</h1>
-            <p>Explore parallel universe in chapter 2 very soon !</p>
+            <h2>Explore parallel universe in chapter 2 very soon!</h2>
         </div>
         <div class="description">
-            <h2 class="blink_cta">
-                Share experience
-            </h2>
+            <h3>
+                Share the experience
+            </h3>
             <ul class="bwp-single-post-share-list list-unstyled">
                 <li>
-                    <a href="https://twitter.com/share?url=https://www.across-universe.com/&amp;text=Across The Universe - A three minute web experience across the universe" rel="nofollow noopener" target="_blank" class="bwp-twitter-share" onclick="window.open('https://twitter.com/share?url=https://www.across-universe.com/&amp;text=Across The Universe - A three minute web experience across the universe', 'Twitter', 'width=700,height=500,left='+(screen.availWidth/2-350)+',top='+(screen.availHeight/2-250)+''); return false;">
+                    <a href="https://twitter.com/share?url=https://s3.eu-west-3.amazonaws.com/www.across-universe.com/index.html&amp;text=Across The Universe - A three minute web experience across the universe" rel="nofollow noopener" target="_blank" class="bwp-twitter-share"
+                        onclick="window.open('https://twitter.com/share?url=https://s3.eu-west-3.amazonaws.com/www.across-universe.com/index.html&amp;text=Across The Universe - A three minute web experience across the universe', 'Twitter', 'width=700,height=500,left='+(screen.availWidth/2-350)+',top='+(screen.availHeight/2-250)+''); return false;">
                         <i class="fab fa-twitter"></i>
                     </a>
                 </li>
@@ -144,17 +152,17 @@
         </div>
         <br style="clear: both;" />
         <br />
-        <h3>
+        <br/>
+        <h4>
             Creative Developer : <a href="https://twitter.com/jesuisundev">Mehdi ZOGHLAMI</a>
-        </h3>
-        <h3>
+        </h4>
+        <h4>
             UI/UX : <a href="https://twitter.com/Nox_WhyNote">Arnaud FRIEDEL</a>
-        </h3>
-        <h3>
-            Music: <a href="https://www.melodysheep.com/">Melodysheep</a> under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">creative commons license</a>
-            <br/>
-            <a href="https://melodysheep.bandcamp.com/album/the-arrow-of-time-soundtrack-to-timelapse-of-the-future">Buy album</a>
-        </h3>
+        </h4>
+        <br />
+        <h4>
+            Music: <a href="https://www.melodysheep.com/">Melodysheep</a> under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">creative commons</a> license : <a href="https://melodysheep.bandcamp.com/album/the-arrow-of-time-soundtrack-to-timelapse-of-the-future">buy album</a>
+        </h4>
     </div>
 
     <div id="whitewall"></div>

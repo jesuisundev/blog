@@ -509,13 +509,6 @@ scene.add(darkCylinder)
 scene.add(colorFullCylinder)
 scene.add(light)
 
-window.addEventListener('resize', () => {
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    camera.aspect = window.innerWidth / window.innerHeight
-    composer.setSize(window.innerWidth, window.innerHeight)
-    camera.updateProjectMatrix()
-})
-
 // handling horizon => this will be highly animated by godrays effect at post processing
 const horizonMaterial = new THREE.MeshBasicMaterial({ opacity: 1 })
 const horizonGeometry = new THREE.SphereBufferGeometry(0.25, 32, 32)
@@ -549,6 +542,13 @@ effectPass.renderToScreen = true
 const composer = new POSTPROCESSING.EffectComposer(renderer)
 composer.addPass(new POSTPROCESSING.RenderPass(scene, camera))
 composer.addPass(effectPass)
+
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    camera.aspect = window.innerWidth / window.innerHeight
+    composer.setSize(window.innerWidth, window.innerHeight)
+    camera.updateProjectionMatrix()
+})
 
 function animate(time) {
     if (needRender) {

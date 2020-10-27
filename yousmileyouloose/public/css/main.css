@@ -9,8 +9,14 @@ body {
     background: darkblue;
 }
 
-#home {
+#home,
+#theater {
     height: 100%;
+}
+
+#theater #webcam {
+    width: 25%;
+    position: absolute;
 }
 
 #separator {

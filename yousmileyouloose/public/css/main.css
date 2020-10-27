@@ -1,6 +1,42 @@
+html,
 body {
+    height: 100%;
+    padding: 0;
     margin: 0;
+}
+
+body {
     background: darkblue;
+}
+
+#home {
+    height: 100%;
+}
+
+#separator {
+    position: absolute;
+    top: 45%;
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+}
+
+#separator #logo {
+    z-index: 9999;
+}
+
+.choice {
+    width: 100%;
+    height: 50%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+a.choice:hover {
+    background-color: black;
 }
 
 p {

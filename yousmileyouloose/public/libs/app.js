@@ -1,7 +1,7 @@
 document.getElementById('actualshit').addEventListener('click', event => setupFaceDetection(event))
 
-const webcam = document.getElementById("webcam");
-webcam.addEventListener("play", refreshState);
+const webcam = document.getElementById("webcam")
+webcam.addEventListener("play", refreshState)
 
 /**
  * Launch the whole process following thoses steps
@@ -15,6 +15,7 @@ async function setupFaceDetection(event) {
     event.preventDefault()
 
     document.getElementById('home').remove()
+    document.getElementById("smileStatus").style.display = "block"
 
     await loadModels()
     setupWebcam()
@@ -27,10 +28,10 @@ async function setupFaceDetection(event) {
 async function loadModels() {
     await faceapi.nets.tinyFaceDetector.loadFromUri(
         "https://192.168.5.39:8080/models"
-    );
+    )
     await faceapi.nets.faceExpressionNet.loadFromUri(
         "https://192.168.5.39:8080/models"
-    );
+    )
 }
 
 /**
@@ -44,7 +45,7 @@ function setupWebcam() {
         .then(stream => {
             webcam.srcObject = stream;
         })
-        .catch(err => console.error("can't found your camera :(", err));
+        .catch(err => console.error("can't found your camera :(", err))
 }
 
 /**
@@ -55,12 +56,40 @@ function setupWebcam() {
  */
 async function refreshState() {
     setInterval(async() => {
-        // const detections = await faceapi
-        //     .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
-        //     .withFaceExpressions();
+        const detections = await faceapi
+            .detectAllFaces(webcam, new faceapi.TinyFaceDetectorOptions())
+            .withFaceExpressions()
 
-        // if (detections && detections[0] && detections[0].expressions) {
-        //     spreadByExpression(getCurrentExpression(detections[0].expressions));
-        // }
-    }, 500);
+        if (detections && detections[0] && detections[0].expressions) {
+            if (isSmiling(detections[0].expressions)) {
+                document.getElementById("smileStatus").textContent = "YOU SMILE !"
+            } else {
+                document.getElementById("smileStatus").textContent = "not smiling"
+            }
+        }
+    }, 500)
+}
+
+/**
+ * Determine if the user is smiling or not by gettingthe most likely current expression 
+ * using the facepi detection object. Build a array to iterate on each possibility and 
+ * pick the most likely.
+ * @param {Object} expressions object of expressions
+ * @return {Boolean}
+ */
+function isSmiling(expressions) {
+    // filtering false positive
+    const maxValue = Math.max(
+        ...Object.values(expressions).filter(value => value <= 1)
+    )
+
+    const expressionsKeys = Object.keys(expressions)
+    const mostLikely = expressionsKeys.filter(
+        expression => expressions[expression] === maxValue
+    )
+
+    if (mostLikely[0] && mostLikely[0] == 'happy')
+        return true
+
+    return false
 }

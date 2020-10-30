@@ -39,9 +39,17 @@
         </a>
     </div>
     <div id="theater">
-        <span id="smileStatus">Getting status ...</span>
-        <video id="webcam" autoplay muted>test</video>
-        <iframe id="video" width="560" height="315" src="https://www.youtube.com/embed/G7RgN9ijwE4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <span id="smileStatus">Getting webcam and smile status ...</span>
+        <video id="webcam" autoplay muted></video>
+        <div id="intermission">
+            <img id="loading" src="https://i.stack.imgur.com/qq8AE.gif" width="32" />
+            <div id="result">
+                <span id="resultSmileStatus"></span>
+                <br /><br />
+                <a id="nextVideo" href="">Next video</a>
+            </div>
+        </div>
+        <div id="player"></div>
     </div>
 </body>
 

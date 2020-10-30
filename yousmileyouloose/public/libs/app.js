@@ -1,7 +1,18 @@
+let isFirstRound = true
+let currentSmileStatus = false
+
 document.getElementById('actualshit').addEventListener('click', event => setupFaceDetection(event))
 
+// initiate webcam
 const webcam = document.getElementById("webcam")
 webcam.addEventListener("play", refreshState)
+
+// initiate youtube player and api
+let player
+const tag = document.createElement('script')
+tag.src = "https://www.youtube.com/iframe_api"
+const firstScriptTag = document.getElementsByTagName('script')[0]
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
 
 /**
  * Launch the whole process following thoses steps
@@ -19,6 +30,7 @@ async function setupFaceDetection(event) {
 
     await loadModels()
     setupWebcam()
+    setupYoutubePlayer()
 }
 
 /**
@@ -26,12 +38,8 @@ async function setupFaceDetection(event) {
  * @async
  */
 async function loadModels() {
-    await faceapi.nets.tinyFaceDetector.loadFromUri(
-        "https://192.168.5.39:8080/models"
-    )
-    await faceapi.nets.faceExpressionNet.loadFromUri(
-        "https://192.168.5.39:8080/models"
-    )
+    await faceapi.nets.tinyFaceDetector.loadFromUri("https://192.168.5.40:8080/models")
+    await faceapi.nets.faceExpressionNet.loadFromUri("https://192.168.5.40:8080/models")
 }
 
 /**
@@ -42,10 +50,27 @@ async function loadModels() {
 function setupWebcam() {
     navigator.mediaDevices
         .getUserMedia({ video: true, audio: false })
-        .then(stream => {
-            webcam.srcObject = stream;
-        })
-        .catch(err => console.error("can't found your camera :(", err))
+        .then(stream => { webcam.srcObject = stream })
+        .catch(() => document.getElementById("smileStatus").textContent = "camera not found")
+}
+
+function setupYoutubePlayer() {
+    player = new YT.Player('player', {
+        height: '100%',
+        width: '100%',
+        videoId: 'G7RgN9ijwE4',
+        playerVars: {
+            'controls': 0,
+            'rel': 0,
+            'showinfo': 0,
+            'modestbranding': 1,
+            'iv_load_policy': 3,
+            'disablekb': 1
+        },
+        events: {
+            'onStateChange': onPlayerStateChange
+        }
+    })
 }
 
 /**
@@ -61,17 +86,46 @@ async function refreshState() {
             .withFaceExpressions()
 
         if (detections && detections[0] && detections[0].expressions) {
+            if (isFirstRound) startFirstRound()
+
             if (isSmiling(detections[0].expressions)) {
+                currentSmileStatus = true
                 document.getElementById("smileStatus").textContent = "YOU SMILE !"
             } else {
                 document.getElementById("smileStatus").textContent = "not smiling"
             }
         }
-    }, 500)
+    }, 200)
+}
+
+function startFirstRound() {
+    isFirstRound = false
+    currentSmileStatus = false
+
+    document.getElementById("loading").remove()
+    document.getElementById('intermission').className = 'fadeOut'
+    player.playVideo()
+}
+
+function onPlayerStateChange(event) {
+    // if the video is finished
+    if (event.data === 0) {
+        showIntermission()
+    }
+}
+
+function showIntermission() {
+    if (currentSmileStatus) {
+        document.getElementById('resultSmileStatus').textContent = "You SMILED during the video ! YOU LOOSE !"
+    } else {
+        document.getElementById('resultSmileStatus').textContent = "You didn't smile during the video ! YOU WIN !"
+    }
+
+    document.getElementById('intermission').className = 'fadeIn'
 }
 
 /**
- * Determine if the user is smiling or not by gettingthe most likely current expression 
+ * Determine if the user is smiling or not by getting the most likely current expression 
  * using the facepi detection object. Build a array to iterate on each possibility and 
  * pick the most likely.
  * @param {Object} expressions object of expressions

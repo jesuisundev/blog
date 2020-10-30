@@ -9,17 +9,44 @@ body {
     background: darkblue;
 }
 
+.fadeIn {
+    opacity: 1;
+}
+
+.fadeOut {
+    opacity: 0;
+}
+
+#home {
+    z-index: 100;
+}
+
+#theater {
+    z-index: 99;
+}
+
 #home,
 #theater {
     height: 100%;
+    -webkit-transition: opacity 2s;
+    -moz-transition: opacity 2s;
+    -o-transition: opacity 2s;
+    transition: opacity 2s;
+}
+
+#intermission {
+    -webkit-transition: opacity 2s;
+    -moz-transition: opacity 2s;
+    -o-transition: opacity 2s;
+    transition: opacity 2s;
 }
 
 #theater #smileStatus {
+    z-index: 98;
     position: absolute;
     top: 10px;
     left: 10px;
     font-weight: bold;
-    z-index: 1;
     background-color: white;
     padding: 10px;
     display: none;
@@ -28,11 +55,26 @@ body {
 #theater #webcam {
     width: 25%;
     position: absolute;
+    z-index: 97;
 }
 
-#theater #video {
+#theater #intermission {
+    position: absolute;
     width: 100%;
     height: 100%;
+    background: black;
+    z-index: 96;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#theater #intermission #resultSmileStatus {
+    color: white;
+}
+
+#theater #player {
+    z-index: 95;
 }
 
 #separator {

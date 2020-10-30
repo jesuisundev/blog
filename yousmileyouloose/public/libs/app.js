@@ -1,7 +1,10 @@
+const listOfVideoIds = ['_swN8e_DNPg', 'ZkNMZlkrzaU', 'xHoxkD8kKJg', 'ewjkzE6X3BM']
+    //'PPzIWFJU_3s' not working (embed problem ?)
 let isFirstRound = true
 let currentSmileStatus = false
 
 document.getElementById('actualshit').addEventListener('click', event => setupFaceDetection(event))
+document.getElementById('nextVideo').addEventListener('click', event => showNextVideo(event))
 
 // initiate webcam
 const webcam = document.getElementById("webcam")
@@ -104,6 +107,7 @@ function startFirstRound() {
 
     document.getElementById("loading").remove()
     document.getElementById('intermission').className = 'fadeOut'
+
     player.playVideo()
 }
 
@@ -122,6 +126,34 @@ function showIntermission() {
     }
 
     document.getElementById('intermission').className = 'fadeIn'
+}
+
+function showNextVideo(event) {
+    event.preventDefault()
+
+    if (listOfVideoIds.length) {
+        const nextVideoId = extractRandomAvailableVideoId()
+        player.loadVideoById({ videoId: nextVideoId })
+        player.playVideo()
+
+        document.getElementById('intermission').className = 'fadeOut'
+    } else {
+        showCredit()
+    }
+}
+
+function showCredit() {
+    document.getElementById('intermission').className = 'fadeOut'
+
+    document.getElementById('credit').display = 'block'
+    document.getElementById('credit').className = 'fadeIn'
+}
+
+function extractRandomAvailableVideoId() {
+    const randomNumber = Math.floor(Math.random() * listOfVideoIds.length)
+    const randomVideoId = listOfVideoIds.splice(randomNumber, 1)
+
+    return randomVideoId
 }
 
 /**

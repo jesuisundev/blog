@@ -1,6 +1,37 @@
-const listOfVideoIds = ['_swN8e_DNPg', 'ZkNMZlkrzaU', 'xHoxkD8kKJg', 'G7RgN9ijwE4', 'K0E_qdXpZcc', '0ZMc9xrehxA']
-    //const listOfVideoIds = ['ZkNMZlkrzaU']
-    //'PPzIWFJU_3s' not working (embed problem ?)
+const listOfVideoIds = [
+    '_swN8e_DNPg',
+    'ZkNMZlkrzaU',
+    'xHoxkD8kKJg',
+    'G7RgN9ijwE4',
+    'K0E_qdXpZcc',
+    '0ZMc9xrehxA',
+    'wFJ6UZ0SkYY',
+    'w3m4N0UVt0M',
+    'NsaSG-0U4mU',
+    'F-X4SLhorvw',
+    'El1BhIQFMfs',
+    'jiudBq7z8wk',
+    'rZhBEMpbxC4',
+    'ZdZ7NKVAQJU',
+    'JUe0GaScPdY',
+    'a5GPB8VDcqg',
+    'fjHGTeTtaac',
+    'l1Qerh-h5Vc',
+    'f5OR6eDhaoI',
+    'rw3I2JhmxmE',
+    'qpObCUeOe5Y',
+    'VdVEwk-5hoI',
+    '-w-58hQ9dLk',
+    'MC2XkigeXiI',
+    'rKm24Z99hY8',
+    'bfCR0dEDO1A',
+    '_Z-Nu351j58',
+    'nsaH7gjZYXE',
+    'wfzadSG4NH0',
+    'v-7Fs9HJvs0',
+    'FMe3J5i1BLY'
+]
+
 let isFirstRound = true
 let isUsingCamera = false
 let currentSmileStatus = false
@@ -66,6 +97,9 @@ function setupWebcam() {
         })
 }
 
+/**
+ * Setup the youtube player using the official API
+ */
 function setupYoutubePlayer() {
     player = new YT.Player('player', {
         height: '100%',
@@ -105,9 +139,12 @@ async function refreshState() {
                 document.getElementById("smileStatus").textContent = "not smiling"
             }
         }
-    }, 200)
+    }, 400)
 }
 
+/**
+ * Entrypoint. This should be use once.
+ */
 function startFirstRound() {
     isFirstRound = false
     currentSmileStatus = false
@@ -118,32 +155,46 @@ function startFirstRound() {
     player.playVideo()
 }
 
+/**
+ * We want to show the intermissions when a video is over.
+ * Listening to the event onPlayerStateChange of the youtube api.
+ */
 function onPlayerStateChange(event) {
-    // if the video is finished
+    // 0 means the video is over
     if (event.data === 0) {
         player.stopVideo()
         showIntermission()
     }
 }
 
+/**
+ * Showing the screen beetwen videos.
+ * Result is defined by various global variable updated by the models.
+ */
 function showIntermission() {
     let smileStatusText = "Your camera is off, you not even trying to beat the game."
 
     if (isUsingCamera) {
         if (currentSmileStatus) {
-            smileStatusText = "You SMILED during the video ! YOU LOOSE !"
+            smileStatusText = "You SMILED during the video !"
+            document.getElementById('resultSmileStatus').className = "lose"
         } else {
-            smileStatusText = "You didn't smile during the video ! YOU WIN !"
+            smileStatusText = "You didn't smile during the video !"
+            document.getElementById('resultSmileStatus').className = "win"
         }
     }
 
     document.getElementById('resultSmileStatus').textContent = smileStatusText
     document.getElementById('loading').style.display = 'none'
-    document.getElementById('nextVideo').style.display = 'block'
+    document.getElementById('nextVideo').style.display = 'inline-block'
     document.getElementById('result').style.display = 'block'
     document.getElementById('intermission').className = 'fadeIn'
 }
 
+/**
+ * Showing the next video to the user.
+ * This should be only trigger but the click on next video.
+ */
 function showNextVideo(event) {
     event.preventDefault()
 
@@ -155,12 +206,19 @@ function showNextVideo(event) {
         player.loadVideoById({ videoId: nextVideoId })
         player.playVideo()
 
-        setTimeout(() => document.getElementById('intermission').className = 'fadeOut', 1000)
+        setTimeout(() => {
+            currentSmileStatus = false
+            document.getElementById('intermission').className = 'fadeOut'
+        }, 1000)
     } else {
         showCredit()
     }
 }
 
+/**
+ * Show the end screen
+ * TODO : Webcam is not really stopped here.
+ */
 function showCredit() {
     document.getElementById('theater').remove()
     webcam.srcObject = null
@@ -169,6 +227,10 @@ function showCredit() {
     document.getElementById('credit').className = 'fadeIn'
 }
 
+/**
+ * Get a video id randomly in the pool of videos.
+ * We use splice here to delete the chosen video from the pool.
+ */
 function extractRandomAvailableVideoId() {
     const randomNumber = Math.floor(Math.random() * listOfVideoIds.length)
     const randomVideoId = listOfVideoIds.splice(randomNumber, 1)

@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="utf-8">
-    <title>You Smile You Loose</title>
-    <meta name="description" content="A three minute web experience across the universe.">
+    <title>You Smile You Lose</title>
+    <meta name="description" content="Open your camera, we show you funny videos. If you smile, you lose ! A wholesome challenge that will make you feel better !">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
     <meta name="twitter:creator" content="@jesuisundev">
@@ -21,19 +21,17 @@
 <body id="global">
     <div id="video"></div>
     <div id="home">
-        <a href="" id="actualshit" class="choice">
-            <p>
-                I'm for real ! I wanna play the real game !
+        <div id="content">
+            <h1>
+                You Smile, You Lose
+            </h1>
+            <p class="description">
+                Open your camera, we show you funny videos. If you smile, you lose !
             </p>
-        </a>
-        <div id="separator">
-            <img id="logo" src="https://w7.pngwing.com/pngs/744/661/png-transparent-emoji-wearing-sunglasses-emoji-sunglasses-smiley-sunglasses-emoji-sticker-glasses-emoticon.png" alt="" width="150px" />
+            <a href="" id="actualshit" class="button">
+                Let's start
+            </a>
         </div>
-        <a href="" id="justplay" class="choice">
-            <p>
-                Nah i'm scared. Just show me funny videos.
-            </p>
-        </a>
     </div>
     <div id="theater">
         <span id="smileStatus">Getting smile status ...</span>
@@ -41,14 +39,46 @@
         <div id="intermission">
             <img id="loading" src="https://i.stack.imgur.com/qq8AE.gif" width="32" />
             <div id="result">
-                <span id="resultSmileStatus"></span>
+                <span id="resultSmileStatus" class="lose"></span>
                 <br /><br />
-                <a id="nextVideo" href="">Next video</a>
+                <a id="nextVideo" href="" class="button">Next video</a>
                 <br /><br />
                 <strong>
-                    Having fun ? Share and challenge your friends not to smile
+                    Having fun ? <br />Challenge your friends not to smile
                 </strong>
-                <span>share links</span>
+                <br /><br />
+                <ul class="bwp-single-post-share-list list-unstyled">
+                    <li>
+                        <a href="https://twitter.com/share?url=https://www.yousmileyouloose.com/&amp;text=You Smile You Lose" rel="nofollow noopener" target="_blank" class="bwp-twitter-share" onclick="window.open('https://twitter.com/share?url=https://www.yousmileyouloose.com/&amp;text=You Smile You Lose', 'Twitter', 'width=700,height=500,left='+(screen.availWidth/2-350)+',top='+(screen.availHeight/2-250)+''); return false;">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/sharer.php?u=https://www.yousmileyouloose.com/&amp;t=You%20Smile%20You%20Lose" rel="nofollow noopener" target="_blank" class="bwp-facebook-share" onclick="window.open('https://www.facebook.com/sharer.php?u=https://www.yousmileyouloose.com/&amp;t=You%20Smile%20You%20Lose', 'Facebook', 'width=700,height=500,left='+(screen.availWidth/2-350)+',top='+(screen.availHeight/2-250)+''); return false;">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/dialog/send?link=https://www.yousmileyouloose.com/&amp;app_id=844511858946898&amp;redirect_uri=https://www.yousmileyouloose.com/" rel="nofollow noopener" target="_blank" class="bwp-messenger-share" onclick="window.open('https://www.facebook.com/dialog/send?link=https://www.yousmileyouloose.com/&amp;app_id=844511858946898&amp;redirect_uri=https://www.yousmileyouloose.com/', 'Whatapp', 'width=800,height=700,left='+(screen.availWidth/2-400)+',top='+(screen.availHeight/2-350)+''); return false;">
+                            <i class="fab fa-facebook-messenger"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://wa.me/?text=https://www.yousmileyouloose.com/" rel="nofollow noopener" target="_blank" class="bwp-whatapp-share" onclick="window.open('https://wa.me/?text=https://www.yousmileyouloose.com/', 'Whatapp', 'width=800,height=700,left='+(screen.availWidth/2-400)+',top='+(screen.availHeight/2-350)+''); return false;">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://www.yousmileyouloose.com/" rel="nofollow noopener" target="_blank" class="bwp-linkedin-share" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url=https://www.yousmileyouloose.com/&amp;media=true', 'Linkedin', 'width=800,height=700,left='+(screen.availWidth/2-400)+',top='+(screen.availHeight/2-350)+''); return false;">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.reddit.com/submit?url=https://www.yousmileyouloose.com/&amp;title=You%20Smile%20You%20Lose" rel="nofollow noopener" target="_blank" class="bwp-reddit-share" onclick="window.open('https://www.reddit.com/submit?url=https://www.yousmileyouloose.com/&amp;title=You%20Smile%20You%20Loose', 'Reddit', 'width=800,height=700,left='+(screen.availWidth/2-400)+',top='+(screen.availHeight/2-350)+''); return false;">
+                            <i class="fab fa-reddit-alien"></i>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div id="player"></div>
@@ -57,13 +87,10 @@
         <div class="calltoaction">
             <h3>No more videos</h3>
             <p>
-                This will be frequently update, come back for more !
-            </p>
-            <p>
-                You want to propose a youtube video ? Please email me the video : admin@jesuisundev.com
+                This will be frequently updated, come back for more !
             </p>
             <strong>
-                Having fun ? Share and challenge your friends not to smile
+                Had fun ? <br />Challenge your friends not to smile
             </strong>
             <br /><br />
             <ul class="bwp-single-post-share-list list-unstyled">
@@ -98,7 +125,7 @@
                     </a>
                 </li>
             </ul>
-            <p><a href="">>Retry !</a></p>
+            <p><a href="" class="button">Retry !</a></p>
         </div>
     </div>
 </body>

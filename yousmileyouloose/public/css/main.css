@@ -4,10 +4,16 @@ body {
     padding: 0;
     margin: 0;
     font-family: Roboto;
+    overflow: hidden;
 }
 
 body {
-    background: darkblue;
+    background: white;
+}
+
+h1 {
+    font-size: 56px;
+    margin-bottom: 0;
 }
 
 .fadeIn {
@@ -20,6 +26,16 @@ body {
 
 #home {
     z-index: 100;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url("/images/background.png") white;
+    background-size: cover;
+    background-position: center;
 }
 
 #theater {
@@ -28,28 +44,58 @@ body {
 
 #home,
 #theater {
+    width: 100%;
     height: 100%;
+    position: absolute;
     -webkit-transition: opacity 2s;
     -moz-transition: opacity 2s;
     -o-transition: opacity 2s;
     transition: opacity 2s;
 }
 
+#home #content {
+    font-size: 16px;
+    padding: 50px;
+}
+
+.button {
+    font-size: 20px;
+    background-color: #005EF9;
+    font-family: Roboto;
+    padding: 15px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    border-radius: 15px;
+    transition: background-color 1s ease;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.button:hover {
+    background: #32197A;
+}
+
 #theater #smileStatus {
     z-index: 98;
     position: absolute;
-    top: 10px;
-    left: 10px;
+    bottom: 20px;
+    left: 20px;
     font-weight: bold;
     background-color: white;
     padding: 10px;
     display: none;
+    border-radius: 15px;
+    font-size: 25px;
 }
 
 #theater #webcam {
     width: 25%;
     position: absolute;
     z-index: 97;
+    left: 10px;
+    bottom: 10px;
+    border-radius: 15px;
 }
 
 #theater #intermission,
@@ -57,22 +103,25 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: black;
     z-index: 96;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    background: url(/images/background.png) white;
+    background-size: cover;
+    background-position: center;
 }
 
 #credit {
     opacity: 0;
     display: none;
     text-align: center;
-    color: white;
+    color: black;
 }
 
 #theater #intermission #resultSmileStatus {
-    color: white;
+    color: black;
 }
 
 #theater #intermission #result {
@@ -83,34 +132,8 @@ body {
     z-index: 95;
 }
 
-#separator {
-    position: absolute;
-    top: 45%;
-    width: 100%;
-    text-align: center;
-    z-index: 1;
-}
-
-#separator #logo {
-    z-index: 9999;
-}
-
-.choice {
-    width: 100%;
-    height: 50%;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-a.choice:hover {
-    background-color: black;
-}
-
 p {
-    color: white;
+    color: black;
 }
 
 .bwp-single-post-share {
@@ -175,4 +198,58 @@ p {
     font-weight: 400;
     color: #fff;
     border-radius: 50%;
+}
+
+.win,
+.lose {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.win {
+    color: mediumseagreen !important;
+}
+
+.lose {
+    color: red !important;
+}
+
+@media screen and (max-device-width: 500px) {
+    h1 {
+        font-size: 10vw;
+    }
+    #theater #smileStatus {
+        font-size: 6vw;
+        left: auto;
+        right: 10px;
+    }
+    .button {
+        font-size: 6vw;
+    }
+    p.description {
+        font-size: 6vw;
+    }
+    #result {
+        padding: 20px;
+    }
+    #result strong {
+        font-size: 5vw;
+    }
+    .win,
+    .lose {
+        font-size: 8vw;
+    }
+    .calltoaction {
+        font-size: 6vw;
+        padding: 50px;
+    }
+    .bwp-single-post-share-list li a {
+        width: 130px;
+        height: 130px;
+        line-height: 130px;
+        font-size: 56px;
+    }
+    #nextVideo {
+        margin-bottom: 80px;
+    }
 }

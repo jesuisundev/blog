@@ -1,6 +1,8 @@
-const listOfVideoIds = ['_swN8e_DNPg', 'ZkNMZlkrzaU', 'xHoxkD8kKJg', 'ewjkzE6X3BM']
+const listOfVideoIds = ['_swN8e_DNPg', 'ZkNMZlkrzaU', 'xHoxkD8kKJg', 'G7RgN9ijwE4', 'K0E_qdXpZcc', '0ZMc9xrehxA']
+    //const listOfVideoIds = ['ZkNMZlkrzaU']
     //'PPzIWFJU_3s' not working (embed problem ?)
 let isFirstRound = true
+let isUsingCamera = false
 let currentSmileStatus = false
 
 document.getElementById('actualshit').addEventListener('click', event => setupFaceDetection(event))
@@ -53,15 +55,22 @@ async function loadModels() {
 function setupWebcam() {
     navigator.mediaDevices
         .getUserMedia({ video: true, audio: false })
-        .then(stream => { webcam.srcObject = stream })
-        .catch(() => document.getElementById("smileStatus").textContent = "camera not found")
+        .then(stream => {
+            webcam.srcObject = stream
+            if (isFirstRound) startFirstRound()
+        })
+        .catch(() => {
+            document.getElementById("smileStatus").textContent = "camera not found"
+            isUsingCamera = false
+            if (isFirstRound) startFirstRound()
+        })
 }
 
 function setupYoutubePlayer() {
     player = new YT.Player('player', {
         height: '100%',
         width: '100%',
-        videoId: 'G7RgN9ijwE4',
+        videoId: 'ewjkzE6X3BM',
         playerVars: {
             'controls': 0,
             'rel': 0,
@@ -70,9 +79,7 @@ function setupYoutubePlayer() {
             'iv_load_policy': 3,
             'disablekb': 1
         },
-        events: {
-            'onStateChange': onPlayerStateChange
-        }
+        events: { 'onStateChange': onPlayerStateChange }
     })
 }
 
@@ -89,7 +96,7 @@ async function refreshState() {
             .withFaceExpressions()
 
         if (detections && detections[0] && detections[0].expressions) {
-            if (isFirstRound) startFirstRound()
+            isUsingCamera = true
 
             if (isSmiling(detections[0].expressions)) {
                 currentSmileStatus = true
@@ -105,7 +112,7 @@ function startFirstRound() {
     isFirstRound = false
     currentSmileStatus = false
 
-    document.getElementById("loading").remove()
+    document.getElementById("loading").style.display = 'none'
     document.getElementById('intermission').className = 'fadeOut'
 
     player.playVideo()
@@ -114,38 +121,51 @@ function startFirstRound() {
 function onPlayerStateChange(event) {
     // if the video is finished
     if (event.data === 0) {
+        player.stopVideo()
         showIntermission()
     }
 }
 
 function showIntermission() {
-    if (currentSmileStatus) {
-        document.getElementById('resultSmileStatus').textContent = "You SMILED during the video ! YOU LOOSE !"
-    } else {
-        document.getElementById('resultSmileStatus').textContent = "You didn't smile during the video ! YOU WIN !"
+    let smileStatusText = "Your camera is off, you not even trying to beat the game."
+
+    if (isUsingCamera) {
+        if (currentSmileStatus) {
+            smileStatusText = "You SMILED during the video ! YOU LOOSE !"
+        } else {
+            smileStatusText = "You didn't smile during the video ! YOU WIN !"
+        }
     }
 
+    document.getElementById('resultSmileStatus').textContent = smileStatusText
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('nextVideo').style.display = 'block'
+    document.getElementById('result').style.display = 'block'
     document.getElementById('intermission').className = 'fadeIn'
 }
 
 function showNextVideo(event) {
     event.preventDefault()
 
+    document.getElementById('loading').style.display = 'block'
+    document.getElementById('result').style.display = 'none'
+
     if (listOfVideoIds.length) {
         const nextVideoId = extractRandomAvailableVideoId()
         player.loadVideoById({ videoId: nextVideoId })
         player.playVideo()
 
-        document.getElementById('intermission').className = 'fadeOut'
+        setTimeout(() => document.getElementById('intermission').className = 'fadeOut', 1000)
     } else {
         showCredit()
     }
 }
 
 function showCredit() {
-    document.getElementById('intermission').className = 'fadeOut'
+    document.getElementById('theater').remove()
+    webcam.srcObject = null
 
-    document.getElementById('credit').display = 'block'
+    document.getElementById('credit').style.display = 'flex'
     document.getElementById('credit').className = 'fadeIn'
 }
 

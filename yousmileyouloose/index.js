@@ -9,8 +9,6 @@ app.use(express.static(path.join(__dirname, "public")));
 https.createServer({
         key: fs.readFileSync('./key.pem'),
         cert: fs.readFileSync('./cert.pem'),
-        passphrase: ''
+        passphrase: 'default'
     }, app)
     .listen(8080);
-
-//app.listen(8080, () => console.log('Server on port 8080'))

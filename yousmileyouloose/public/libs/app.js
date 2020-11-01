@@ -70,12 +70,24 @@ async function setupFaceDetection(event) {
 }
 
 /**
- * Load models from faceapi
+ * Load models from faceapi.
+ * 
+ * Host need be replaced by your local ip if you running this in local !
  * @async
  */
 async function loadModels() {
-    await faceapi.nets.tinyFaceDetector.loadFromUri("https://192.168.5.40:8080/models")
-    await faceapi.nets.faceExpressionNet.loadFromUri("https://192.168.5.40:8080/models")
+    let modelsUrl = "www.smile-lose.com"
+
+    // Use this for local development
+    // this should be the IP of your HTTPS server (example : 192.168.5.40)
+    const host = "192.168.5.40"
+        // this should the port where your HTTPS server is served (default : 8080)
+    const port = "8080"
+    modelsUrl = `https://${host}:${port}/models`
+
+
+    await faceapi.nets.tinyFaceDetector.loadFromUri(modelsUrl)
+    await faceapi.nets.faceExpressionNet.loadFromUri(modelsUrl)
 }
 
 /**
